@@ -13,13 +13,16 @@ const router = createRouter({
       path: '/',
       redirect: to => {
         const userData = JSON.parse(localStorage.getItem('userData') || '{}')
+        console.log(Object.keys(userData).length > 0)
         
-        if ( userData && userData.data.role.name === "System super admin")
-          return { name: 'admin-dashboard' }
-        else{
-          return { name: 'login', query: to.query }
+        if (Object.keys(userData).length > 0) {
+          const userRole = (userData && userData.data.role) ? userData.data.role : null
+          if (userRole.name === "System super admin")
+            return { name: 'admin-dashboard' }
         }
+
         
+        return { name: 'login', query: to.query }
       },
     },
     {

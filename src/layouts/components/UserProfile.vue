@@ -9,12 +9,6 @@ const router = useRouter()
 const ability = useAppAbility()
 const userData = JSON.parse(localStorage.getItem('userData') || 'null')
 
-
-onMounted(() => {
-  console.log(userData)
-})
-
-
 const logout = () => {
 
   // Remove "userData" from localStorage
@@ -22,14 +16,15 @@ const logout = () => {
 
   // Remove "accessToken" from localStorage
   localStorage.removeItem('accessToken')
-  router.push('/login').then(() => {
+  
+  // Remove "userAbilities" from localStorage
+  localStorage.removeItem('userAbilities')
 
-    // Remove "userAbilities" from localStorage
-    localStorage.removeItem('userAbilities')
+  // Reset ability to initial ability
+  ability.update(initialAbility)
 
-    // Reset ability to initial ability
-    ability.update(initialAbility)
-  })
+  window.location.href = '/login'
+  
 }
 
 const userProfileList = [
