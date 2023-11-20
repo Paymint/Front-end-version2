@@ -1,0 +1,17 @@
+import store from "@/state/store";
+
+export function authHeader() {
+    // return authorization header with jwt token
+    let user = JSON.parse(store.getters['auth/getUserData']);
+    console.log(user);
+    console.log('555');
+    // let user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.access_token) {
+        return {
+            'Authorization': 'Bearer ' + user.access_token,
+            'Accept': 'application/json'
+        };
+    } else {
+        return {};
+    }
+}
