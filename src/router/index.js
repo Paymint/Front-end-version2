@@ -16,8 +16,9 @@ const router = createRouter({
         const userRole = (userData && userData.data.role) ? userData.data.role : null
         if (userRole.name === "System super admin")
           return { name: 'admin-dashboard' }
-        
-        return { name: 'login', query: to.query }
+        else{
+          return { name: 'login', query: to.query }
+        }
       },
     },
     {
