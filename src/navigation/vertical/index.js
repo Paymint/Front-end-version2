@@ -9,18 +9,35 @@ import salaryAdvance from './module/salaryAdvance'
 import settings from './module/settings'
 import users from './module/users'
 
+import agentDashboard from './module/agent/dashboard'
+import agentUsers from './module/agent/users'
 
 
 
-export default [
-  ...dashboard,
-  ...notification,
-  ...requests, 
-  ...companies, 
-  ...users, 
-  ...financial, 
-  ...reports, 
-  ...salaryAdvance, 
-  ...settings,
-  ...billPayment,
-]
+const role = JSON.parse(localStorage.getItem('userData')).role.name
+
+let exportedData
+
+if(role !== "Agent") {
+  exportedData = [
+    ...dashboard,
+    ...notification,
+    ...requests, 
+    ...companies, 
+    ...users, 
+    ...financial, 
+    ...reports, 
+    ...salaryAdvance, 
+    ...settings,
+    ...billPayment,
+  ]
+}
+
+if (role === "Agent") {
+  exportedData = [
+    ...agentDashboard,
+    ...agentUsers,
+  ]
+}
+
+export default exportedData

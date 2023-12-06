@@ -1,28 +1,37 @@
 <script setup>
 import { VForm } from 'vuetify/components/VForm'
-import authV2RegisterIllustrationBorderedDark from '@images/pages/auth-v2-register-illustration-bordered-dark.png'
-import authV2RegisterIllustrationBorderedLight from '@images/pages/auth-v2-register-illustration-bordered-light.png'
-import authV2RegisterIllustrationDark from '@images/pages/auth-v2-register-illustration-dark.png'
-import authV2RegisterIllustrationLight from '@images/pages/auth-v2-register-illustration-light.png'
-import authV2MaskDark from '@images/pages/misc-mask-dark.png'
-import authV2MaskLight from '@images/pages/misc-mask-light.png'
+import authImg from "@images/auth/login.jpg"
 import { useAppAbility } from '@/plugins/casl/useAppAbility'
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
+import { useEgyptPhoneNumber } from "@/composable/useEgyptPhoneNumber"
+import { useGlobalHandleError } from "@/composable/useGlobalHandleError"
+import { useAuthStore } from "@/store/auth/authStore"
+import { useI18n } from "vue-i18n"
 import axios from '@axios'
-import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
-import {
-  alphaDashValidator,
-  emailValidator,
-  requiredValidator,
-} from '@validators'
+import { requiredValidator, passwordValidator, confirmedValidator  } from "@validators"
+import EgyptIcon from "@images/egypt.png"
+import { onMounted } from 'vue'
 
+const { t } = useI18n()
+const { errors, setErrors } = useGlobalHandleError()
+const { checkIfEgyptPhoneNumber } = useEgyptPhoneNumber()
+const authStore = useAuthStore()
+
+// data ref
 const refVForm = ref()
-const username = ref('johnDoe')
-const email = ref('john@example.com')
-const password = ref('john@VUEXY#123')
+const refOTPVForm = ref()
+const mobile = ref('')
+const nationalID = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const isPasswordVisible = ref(false)
+const isConfirmPasswordVisible = ref(false)
 const privacyPolicies = ref(true)
+const registerd_data = ref('register-otp')
+const loading = ref(false)
+const timer = ref(50)
+const otpNumber = ref(null)
 
 // Router
 const route = useRoute()
@@ -32,10 +41,87 @@ const router = useRouter()
 const ability = useAppAbility()
 
 // Form Errors
-const errors = ref({
-  email: undefined,
+const registerErrors = ref({
+  mobile: undefined,
+  nationalID: undefined,
   password: undefined,
+  confirmPassword: undefined,
 })
+
+const updateOtp = data => {
+  if (data.length === 6) {
+    isOtpCompleted.value = true
+    otpNumber.value = data
+  }else {
+    isOtpCompleted.value = false
+  }
+}
+
+
+const registerUser = async () => {
+  loading.value = true
+  try {
+
+    let credentials = {
+      mobile_number: mobile.value,
+      national_id: nationalID.value,
+      source: 'web',
+    }
+    const response = await authStore.registerUser(credentials)
+
+    console.log(response)
+
+    // if(response.errors.length < 1){
+    //   registerd_data.value = 'confirm-otp'
+    //   loading.value = false
+    // }
+  } catch (e) {
+    console.log(e)
+
+    // handleErrors(e)
+  }
+}
+
+const confirmOTPData = async () => {
+  loading.value = true
+
+  if(timer.value == 0) {
+    return Toast.fire({
+      icon: "warning",
+      title: t("forgot_password.OTP_expire"),
+    })
+  }
+
+  try {
+    const credentials = {
+      otp: otpNumber.value,
+      forget_password_token: forget_password_token.value,
+    }
+
+    const response = await authStore.sendOTP(credentials)
+    if(response.errors.length < 1) {
+      isDataConfirmed = 'confirm-new-password'
+      loading.value = false
+    }
+  } catch (err) {
+    handleErrors(err)
+  }
+}
+
+const secondsTimer = () => {
+  const interval = setInterval(() => {
+    if (timer.value > 0) {
+      timer.value--
+    } else {
+      clearInterval(timer.value)
+    }
+  }, 1000)
+}
+
+const zeroPadded = num => {
+  return num < 10 ? `0${num}` : num
+}
+
 
 const register = () => {
   axios.post('/auth/register', {
@@ -62,16 +148,34 @@ const register = () => {
   })
 }
 
-const imageVariant = useGenerateImageVariant(authV2RegisterIllustrationLight, authV2RegisterIllustrationDark, authV2RegisterIllustrationBorderedLight, authV2RegisterIllustrationBorderedDark, true)
-const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
-const isPasswordVisible = ref(false)
+const handleErrors = err => {
+  loading.value = false
+  if (err.response) {
+    const { status, data } = err.response
+    if (status === 422) {
+      setErrors(data.errors)
+    } else {
+      router.push('/admin/403')
+    }
+  }
+}
 
 const onSubmit = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid)
-      register()
+      registerUser()
   })
 }
+
+const onSubmitUpdateOTP = () => {
+  refOTPVForm.value?.validate().then(({ valid: isValid }) => {
+    if (isValid) confirmOTPData()
+  })
+}
+
+onMounted(() => {
+  secondsTimer()
+})
 </script>
 
 <template>
@@ -80,24 +184,10 @@ const onSubmit = () => {
     class="auth-wrapper bg-surface"
   >
     <VCol
+      class="d-none d-lg-flex auth-bg"
+      :style="{ 'background-image': 'url(' + authImg + ')' }"
       lg="8"
-      class="d-none d-lg-flex"
-    >
-      <div class="position-relative bg-background rounded-lg w-100 ma-8 me-0">
-        <div class="d-flex align-center justify-center w-100 h-100">
-          <VImg
-            max-width="441"
-            :src="imageVariant"
-            class="auth-illustration mt-16 mb-2"
-          />
-        </div>
-
-        <VImg
-          class="auth-footer-mask"
-          :src="authThemeMask"
-        />
-      </div>
-    </VCol>
+    />
 
     <VCol
       cols="12"
@@ -112,53 +202,58 @@ const onSubmit = () => {
         <VCardText>
           <VNodeRenderer
             :nodes="themeConfig.app.logo"
-            class="mb-6"
+            class="mb-0"
           />
+        </VCardText>
+          
+        <VCardText v-if="registerd_data == 'register-otp'">
           <h5 class="text-h5 mb-1">
             Adventure starts here 🚀
           </h5>
-          <p class="mb-0">
+          <p class="mb-6">
             Make your app management easy and fun!
           </p>
-        </VCardText>
-
-        <VCardText>
           <VForm
             ref="refVForm"
             @submit.prevent="onSubmit"
           >
             <VRow>
-              <!-- Username -->
+              <!-- mobile -->
               <VCol cols="12">
-                <AppTextField
-                  v-model="username"
+                <VTextField
+                  v-model="mobile"
+                  class="input-field mobile-field"
                   autofocus
-                  :rules="[requiredValidator, alphaDashValidator]"
-                  label="Username"
-                />
+                  :error-messages="registerErrors.mobile"
+                  type="text"
+                  label="Mobile"
+                  variant="outlined"
+                >
+                  <template #prepend-inner>
+                    <img 
+                      :src="EgyptIcon" 
+                      alt="Custom Icon" 
+                      style="width: 20px; height: 20px; " 
+                    >
+                  </template>
+                </VTextField>
               </VCol>
 
               <!-- email -->
               <VCol cols="12">
-                <AppTextField
-                  v-model="email"
-                  :rules="[requiredValidator, emailValidator]"
-                  label="Email"
-                  type="email"
+                <VTextField
+                  v-model="nationalID"
+                  prepend-inner-icon="tabler-id-badge"
+                  class="input-field"
+                  variant="outlined"
+                  :error-messages="registerErrors.nationalID"
+                  label="National"
+                  type="text"
                 />
               </VCol>
 
               <!-- password -->
               <VCol cols="12">
-                <AppTextField
-                  v-model="password"
-                  :rules="[requiredValidator]"
-                  label="Password"
-                  :type="isPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
-                  @click:append-inner="isPasswordVisible = !isPasswordVisible"
-                />
-
                 <div class="d-flex align-center mt-2 mb-4">
                   <VCheckbox
                     id="privacy-policy"
@@ -181,8 +276,14 @@ const onSubmit = () => {
                 <VBtn
                   block
                   type="submit"
+                  :loading="loading"
                 >
                   Sign up
+                  <template #loader>
+                    <span class="custom-loader">
+                      <VIcon icon="tabler-refresh" />
+                    </span>
+                  </template>
                 </VBtn>
               </VCol>
 
@@ -196,25 +297,70 @@ const onSubmit = () => {
                   class="text-primary ms-2"
                   :to="{ name: 'login' }"
                 >
-                  Sign in instead
+                  Sign in
                 </RouterLink>
               </VCol>
-
-              <VCol
-                cols="12"
-                class="d-flex align-center"
-              >
-                <VDivider />
-                <span class="mx-4">or</span>
-                <VDivider />
+            </VRow>
+          </VForm>
+        </VCardText>
+        <VCardText v-if="isDataConfirmed == 'confirm-otp'">
+          <VForm 
+            ref="refOTPVForm"
+            @submit.prevent="onSubmitUpdateOTP"
+          >
+            <VRow>
+              <!-- otp -->
+              <VCol cols="12">
+                <AppOtpInput @update-otp="updateOtp" />
               </VCol>
 
-              <!-- auth providers -->
-              <VCol
-                cols="12"
-                class="text-center"
-              >
-                <AuthProvider />
+              <!-- verify otp -->
+              <VCol cols="12">
+                <VBtn
+                  :disabled="!isOtpCompleted"
+                  block
+                  :loading="loading"
+                  type="submit"
+                >
+                  Verify OTP
+                  <template #loader>
+                    <span class="custom-loader">
+                      <VIcon icon="tabler-refresh" />
+                    </span>
+                  </template>
+                </VBtn>
+              </VCol>
+
+              <VCol cols="12 text-center">
+                <p> <strong>OTP timeout</strong>  00:{{ zeroPadded(timer) }}</p>  
+              </VCol>
+
+              <!-- resend otp -->
+              <VCol cols="12">
+                <div class="d-flex justify-center align-center flex-wrap">
+                  <span class="me-0">Didn't get the code?</span>
+                  <VBtn 
+                    class="px-2" 
+                    variant="plain"
+                    @click="resendOtp"
+                  >
+                    Resend
+                  </VBtn>
+                </div>
+              </VCol>
+
+              <!-- back to login -->
+              <VCol cols="12">
+                <RouterLink
+                  class="d-flex align-center justify-center"
+                  :to="{ name: 'login' }"
+                >
+                  <VIcon
+                    icon="tabler-chevron-left"
+                    class="flip-in-rtl"
+                  />
+                  <span>Back to login</span>
+                </RouterLink>
               </VCol>
             </VRow>
           </VForm>
@@ -226,6 +372,17 @@ const onSubmit = () => {
 
 <style lang="scss">
 @use "@core/scss/template/pages/page-auth.scss";
+.auth-bg {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.mobile-field{
+  .v-field__prepend-inner {
+    padding-top: 10px;
+  }
+}
 </style>
 
 <route lang="yaml">

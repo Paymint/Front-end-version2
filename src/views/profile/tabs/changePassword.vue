@@ -4,11 +4,10 @@ import {
   passwordValidator,
   requiredValidator,
 } from "@validators"
-import Swal from "sweetalert2/dist/sweetalert2"
 import { ref } from "vue"
 import { useAuthStore } from "@/store/auth/authStore"
 import { useI18n } from "vue-i18n"
-
+import Swal from "sweetalert2/dist/sweetalert2"
 import "sweetalert2/src/sweetalert2.scss"
 
 const { t } = useI18n()

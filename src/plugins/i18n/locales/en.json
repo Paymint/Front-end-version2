@@ -41,9 +41,11 @@
   "business_field_navbar_title":"Business Field",
   "places_navbar_title":"Places",
   "countries_navbar_title":"Countries",
-"cities_navbar_title": "Cities",
-"payment_methods_navbar_title": "Payment Methods",
-
+  "cities_navbar_title": "Cities",
+  "payment_methods_navbar_title": "Payment Methods",
+  "users": "Users",
+  "pending_users": "Pending Users",
+  "register_users": "Register User",
 
   "notification": {
     "category": "Category",
@@ -257,6 +259,7 @@
     "user_name": "Mobile / UserName / Email",
     "go_back": "go back",
     "resend_code": "Resend Code",
+    "OTP_expire": "OTP has expired please resend otp again",
     "resend_code_success": "OTP Sent Again Successfully",
     "first_element_error": "The written data is not registered with us as Mobile or UserName or Email",
     "pass_changed_success": "Password changed successfully"

@@ -22,8 +22,9 @@ export const userDataStore = defineStore('userDataStore', {
       this.id = JSON.parse(userDataStore).data.id
       this.role = JSON.parse(userDataStore).data.role.name
       this.userName = JSON.parse(userDataStore).data.userName
-      this.acctualBalance = JSON.parse(userDataStore).data.money.actual_balance
-      this.outStandingBalance = JSON.parse(userDataStore).data.money.outstanding_balance
+      
+      // this.acctualBalance = JSON.parse(userDataStore).data.money.actual_balance
+      // this.outStandingBalance = JSON.parse(userDataStore).data.money.outstanding_balance
     },
   },
 })

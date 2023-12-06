@@ -143,8 +143,6 @@ import ListView from "./list-view/index.vue"
 import { useI18n } from "vue-i18n"
 import CompanyService from "@/services/CompanyService"
 
-
-
 const { t } = useI18n()
 
 // import GridView from "./grid-view/index.vue"

@@ -48,9 +48,8 @@ const handleKeyDown = (event, index) => {
 
 <template>
   <div>
-    <h6 class="text-h6 mb-3">
-      Type your 6 digit security code
-    </h6>
+    <slot name="header" />
+
     <div
       ref="refOtpComp"
       class="d-flex align-center gap-4"

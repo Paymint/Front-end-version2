@@ -1,23 +1,13 @@
 <script setup>
-import { useAppAbility } from '@/plugins/casl/useAppAbility'
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
-import axios from '@axios'
-import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
-import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
-import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
-import authV2LoginIllustrationDark from '@images/pages/auth-v2-login-illustration-dark.png'
-import authV2LoginIllustrationLight from '@images/pages/auth-v2-login-illustration-light.png'
-import authV2MaskDark from '@images/pages/misc-mask-dark.png'
-import authV2MaskLight from '@images/pages/misc-mask-light.png'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
-import {
-  requiredValidator,
-} from '@validators'
-import { VForm } from 'vuetify/components/VForm'
+import { useAppAbility } from "@/plugins/casl/useAppAbility"
+import axios from "@axios"
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer"
+import { themeConfig } from "@themeConfig"
+import { requiredValidator } from "@validators"
+import { VForm } from "vuetify/components/VForm"
+import { useRouter } from "vue-router"
+import authImg from "@images/auth/login.jpg"
 
-const authThemeImg = useGenerateImageVariant(authV2LoginIllustrationLight, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
-const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 const isPasswordVisible = ref(false)
 const route = useRoute()
 const router = useRouter()
@@ -29,117 +19,110 @@ const errors = ref({
 })
 
 const refVForm = ref()
-const user_name = ref('sadmin')
-const password = ref('P@ssw0rd1')
+const user_name = ref("newAgent")
+const password = ref("12345678")
 const rememberMe = ref(false)
+const loading = ref(false)
 
 const baseUrl = process.env.VUE_APP_BASE_URL
 
 const login = () => {
-  axios.post(baseUrl + 'agent-login', {
-    user_name: user_name.value,
-    password: password.value,
-  }).then(r => {
+  loading.value = true
+  axios
+    .post(baseUrl + "agent-login", {
+      user_name: user_name.value,
+      password: password.value,
+      source: 'web',
+    })
+    .then( r => {
 
-    const { access_token, permissions } = r.data.data
-    const userData  = r.data
+      const response = r.data.data
 
+      if (response.must_have_2fa && response.must_have_2fa == 1) {
+        localStorage.setItem('enable_have2Fa', response.enable_2fa)
+        localStorage.setItem('user_ref_number', response.user_reference_number)
+        loading.value = false
+        if (response.enable_2fa == 0) {
+          router.push("auth/mfa-auth")
+        }
 
-    localStorage.setItem('userAbilities', JSON.stringify(permissions))
-    ability.update(permissions)
-    localStorage.setItem('userData', JSON.stringify(userData))
-    localStorage.setItem('accessToken', JSON.stringify(access_token))
+        if (response.enable_2fa == 1) {
+          router.push("auth/mfa-auth-login")
+        }
+      } else {
+        const { access_token, permissions } = response
+       
+        localStorage.setItem('userAbilities', JSON.stringify(permissions))
+        ability.update(permissions)
+        localStorage.setItem('userData', JSON.stringify(response))
+        localStorage.setItem('accessToken', JSON.stringify(access_token))
 
-    // Redirect to `to` query if exist or redirect to index route
-    router.replace(route.query.to ? String(route.query.to) : '/')
-  }).catch(e => {
-    const { errors: formErrors } = e.response.data
+        
+        router.replace(route.query.to ? String(route.query.to) : '/')
 
-    errors.value = formErrors
-    console.error(e.response.data)
-  })
+      }
+    }).catch(() => {
+      loading.value = false
+    })
 }
 
 const onSubmit = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
-    if (isValid)
-      login()
+    if (isValid) login()
   })
 }
 </script>
 
 <template>
-  <VRow
-    no-gutters
+  <VRow 
+    no-gutters 
     class="auth-wrapper bg-surface"
   >
     <VCol
       lg="8"
-      class="d-none d-lg-flex"
-    >
-      <div class="position-relative bg-background rounded-lg w-100 ma-8 me-0">
-        <div class="d-flex align-center justify-center w-100 h-100">
-          <VImg
-            max-width="505"
-            :src="authThemeImg"
-            class="auth-illustration mt-16 mb-2"
-          />
-        </div>
-
-        <VImg
-          :src="authThemeMask"
-          class="auth-footer-mask"
-        />
-      </div>
-    </VCol>
+      class="d-none d-lg-flex auth-bg"
+      :style="{ 'background-image': 'url(' + authImg + ')' }"
+    />
 
     <VCol
       cols="12"
       lg="4"
       class="auth-card-v2 d-flex align-center justify-center"
     >
-      <VCard
-        flat
-        :max-width="500"
+      <VCard 
+        flat 
+        :max-width="500" 
         class="mt-12 mt-sm-0 pa-4"
       >
         <VCardText>
-          <VNodeRenderer
-            :nodes="themeConfig.app.logo"
-            class="mb-6"
+          <VNodeRenderer 
+            :nodes="themeConfig.app.logo" 
+            class="mb-6" 
           />
 
           <h5 class="text-h5 mb-1">
-            Welcome to <span class="text-capitalize"> {{ themeConfig.app.title }} </span>! 👋🏻
+            Welcome to
+            <span class="text-capitalize"> {{ themeConfig.app.title }} </span>!
+            👋🏻
           </h5>
           <p class="mb-0">
             Please sign-in to your account and start the adventure
           </p>
         </VCardText>
         <VCardText>
-          <VAlert
-            color="primary"
-            variant="tonal"
-          >
-            <p class="text-caption mb-2">
-              Admin user_name: <strong>sadmin</strong> / Pass: <strong>admin</strong>
-            </p>
-            <p class="text-caption mb-0">
-              Client user_name: <strong>client@demo.com</strong> / Pass: <strong>client</strong>
-            </p>
-          </VAlert>
-        </VCardText>
-        <VCardText>
-          <VForm
+          <VForm 
             ref="refVForm"
             @submit.prevent="onSubmit"
           >
             <VRow>
               <!-- user_name -->
               <VCol cols="12">
-                <AppTextField
+                <VTextField
                   v-model="user_name"
-                  label="user_name"
+                  class="input-field"
+                  prepend-inner-icon="tabler-user"
+                  label="Username"
+                  variant="outlined"
                   type="text"
                   autofocus
                   :rules="[requiredValidator]"
@@ -149,20 +132,25 @@ const onSubmit = () => {
 
               <!-- password -->
               <VCol cols="12">
-                <AppTextField
+                <VTextField
                   v-model="password"
+                  class="input-field"
+                  prepend-inner-icon="tabler-lock"
                   label="Password"
+                  variant="outlined"
                   :rules="[requiredValidator]"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   :error-messages="errors.password"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
 
                 <div class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4">
-                  <VCheckbox
-                    v-model="rememberMe"
-                    label="Remember me"
+                  <VCheckbox 
+                    v-model="rememberMe" 
+                    label="Remember me" 
                   />
                   <RouterLink
                     class="text-primary ms-2 mb-1"
@@ -172,17 +160,23 @@ const onSubmit = () => {
                   </RouterLink>
                 </div>
 
-                <VBtn
-                  block
+                <VBtn 
+                  block 
                   type="submit"
-                >
+                  :loading="loading"
+                > 
                   Login
+                  <template #loader>
+                    <span class="custom-loader">
+                      <VIcon icon="tabler-refresh" />
+                    </span>
+                  </template>
                 </VBtn>
               </VCol>
 
               <!-- create account -->
-              <VCol
-                cols="12"
+              <VCol 
+                cols="12" 
                 class="text-center"
               >
                 <span>New on our platform?</span>
@@ -192,22 +186,6 @@ const onSubmit = () => {
                 >
                   Create an account
                 </RouterLink>
-              </VCol>
-              <VCol
-                cols="12"
-                class="d-flex align-center"
-              >
-                <VDivider />
-                <span class="mx-4">or</span>
-                <VDivider />
-              </VCol>
-
-              <!-- auth providers -->
-              <VCol
-                cols="12"
-                class="text-center"
-              >
-                <AuthProvider />
               </VCol>
             </VRow>
           </VForm>
@@ -219,6 +197,20 @@ const onSubmit = () => {
 
 <style lang="scss">
 @use "@core/scss/template/pages/page-auth.scss";
+
+.auth-bg {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.input-field{
+  input{
+    text-align: left !important;
+    padding-left: 10px !important;
+    font-size: 13px !important;
+  }
+}
 </style>
 
 <route lang="yaml">

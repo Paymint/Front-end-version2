@@ -94,14 +94,6 @@ watchEffect(() => {
                 </span>
               </div>
             </div>
-
-            <!-- 👉 append chevron -->
-            <VIcon
-              v-if="isHorizontalAndNotLastStep(index)"
-              class="flip-in-rtl stepper-chevron-indicator mx-6"
-              size="24"
-              icon="tabler-chevron-right"
-            />
           </div>
         </template>
         <!-- !SECTION  -->
@@ -231,7 +223,8 @@ watchEffect(() => {
 
   // 👉 stepper step with icon and  default
   .v-slide-group__content {
-    justify-content: center;
+    justify-content: space-around;
+    margin-bottom: 40px;
     row-gap: 1.5rem;
 
     .stepper-step-indicator {

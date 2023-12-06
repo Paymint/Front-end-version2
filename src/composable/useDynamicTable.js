@@ -16,13 +16,12 @@ export const useDynamicTable = (headers, url, resParams) => {
       const baseUrl = process.env.VUE_APP_BASE_URL + url
       const response = await axios.get(`${baseUrl}?page=${currentPage.value}&${resParams}`)
       if (response.status === 200) {
-        tableData.value = response.data.transactions
+        console.log(response.data)
+        tableData.value = response.data.data
         totalRows.value = response.data.pagination.total
         fromRecord.value = response.data.pagination.from
         toRecord.value = response.data.pagination.to
-
       }
-
     }
   }
 
@@ -35,7 +34,6 @@ export const useDynamicTable = (headers, url, resParams) => {
     currentPage.value = page
     fetchData()
   }
-
 
   const downloadFile = async (downloadUrl, urlParams, title) => {
     loading.value = true

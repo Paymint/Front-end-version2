@@ -2,6 +2,8 @@ export default [
   {
     title: 'financials_navbar_title',
     icon: { icon: 'tabler-currency-pound' },
+    actions: 'manage',
+    subject: 'company_edit',
     children: [
       {
         title: 'charge_request_navbar_title',
