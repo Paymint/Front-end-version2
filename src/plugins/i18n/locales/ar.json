@@ -568,6 +568,9 @@
     "request_added_Successfully": "تم الطلب بنجاح"
   },
   "general": {
+    "Islam": "مسلم",
+    "jewish": "يهودي",
+    "Christian": "مسيحي",
     "select_reason": "اختار السبب",
     "select_payment_method": "اختار وسيلة الدفع",
     "ente_reference_number": "الرقم المرجعي المستلم",
@@ -1293,6 +1296,7 @@
     "not_interested": "غير مهتم"
   },
   "error": {
+    "field_is_required": "هذا الحقل مطلوب",
     "transfer_amount_required": "مبلغ التحويل مطلوب",
     "selected_company_required": "الشركة المستلمة مطلوبة",
     "transfer_error1": "يجب ألا يقل مبلغ التحويل عن ",

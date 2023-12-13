@@ -6,26 +6,16 @@
       cols="12"
     >
       <VCard class="company-bio">
-        <VCardText class="text-center d-flex">
+        <VCardText class="text-center d-flex justify-center">
           <!-- 👉 Avatar -->
           <div
-            class="img-src flex-fill"
+            class="img-src"
             style="overflow: hidden;width: 100px;"
           >
             <VImg
               style="width: 110px; border-radius: 50%;"
-              src="https://api.paymint-eg.com/storage/14572/169089342191407.jpg"
+              :src="userData.personal_image"
             />
-          </div>
-
-          <!-- 👉 company name -->
-          <div class="flex-fill d-flex flex-column justify-center">
-            <h4>
-              English Company Name
-            </h4>
-            <h4>
-              Arabic Company Name
-            </h4>
           </div>
         </VCardText>
         <VDivider />
@@ -51,7 +41,7 @@
                 <p class="text-subtitle-2 text-black">
                   {{ $t('company_profile.name') }}
                   <span class="text-body-2">
-                    {{ userData.name }}
+                    {{ userData.role.name }}
                   </span>
                 </p>
               </VListItemTitle>
@@ -61,7 +51,7 @@
               <VListItemTitle>
                 <p class="text-subtitle-2 text-black">
                   {{ $t('company_profile.phone') }}
-                  <span class="text-body-2">{{ userData.primary_number }}</span>
+                  <span class="text-body-2">{{ userData.phone_number }}</span>
                 </p>
               </VListItemTitle>
             </VListItem>
@@ -98,11 +88,16 @@
             variant="elevated"
             class="edit-data"
             size="small"
+            @click="editData"
           >
             {{ $t('general.edit_data') }}
           </VBtn>
         </VCardText>
       </VCard>
+      <EditDataDialog 
+        v-model:is-dialog-visible="isDialogVisible"
+        :user-data="userData"
+      />
     </VCol>
   </VRow>
 </template>
@@ -112,16 +107,34 @@ import { userDataStore } from '@/store/useGetUserData'
 import { useUserProfileStore } from '@/views/profile/useUserProfileStore'
 import { onMounted, ref } from 'vue'
 
+import EditDataDialog from "./tabs/EditUserDialog.vue"
+
 const userStore = userDataStore()
 
 const userProfileStore = useUserProfileStore()
 const userData = ref(null)
+const isDialogVisible = ref(false)
+
+const editData = () => {
+  isDialogVisible.value = true
+}
+
+const getUserData = async () => {
+
+  try {
+    const response = await userProfileStore.fetchUserProfile()
+    if(response.status){
+      userData.value = response.data
+    }
+
+  } catch (e) { 
+    console.log(e)
+  }
+}
 
 onMounted(() => {
+  getUserData()
   userStore.getData()
-  userProfileStore.fetchUserProfile(userStore.getID).then(response => {
-    userData.value = response.data.data
-  })
 })
 </script>
 

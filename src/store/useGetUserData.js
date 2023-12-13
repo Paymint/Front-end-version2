@@ -18,10 +18,10 @@ export const userDataStore = defineStore('userDataStore', {
   actions: {
     getData(){
       const userDataStore = localStorage.getItem('userData')
-
-      this.id = JSON.parse(userDataStore).data.id
-      this.role = JSON.parse(userDataStore).data.role.name
-      this.userName = JSON.parse(userDataStore).data.userName
+      
+      this.id = JSON.parse(userDataStore).id
+      this.role = JSON.parse(userDataStore).role.name
+      this.userName = JSON.parse(userDataStore).userName
       
       // this.acctualBalance = JSON.parse(userDataStore).data.money.actual_balance
       // this.outStandingBalance = JSON.parse(userDataStore).data.money.outstanding_balance

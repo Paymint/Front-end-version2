@@ -13,6 +13,8 @@ import '@core/scss/template/index.scss'
 import '@styles/styles.scss'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
+import Toast from "vue-toastification"
+import "vue-toastification/dist/index.css"
 
 loadFonts()
 
@@ -30,6 +32,7 @@ app.use(i18n)
 app.use(abilitiesPlugin, ability, {
   useGlobalProperties: true,
 })
+app.use(Toast)
 
 // Mount vue app
 app.mount('#app')

@@ -62,8 +62,8 @@ const userProfileList = [
   >
     <VAvatar
       class="cursor-pointer"
-      :color="!(userData.data && userData.data.avatar) ? 'primary' : undefined"
-      :variant="!(userData.data && userData.data.avatar) ? 'tonal' : undefined"
+      :color="!(userData && userData.avatar) ? 'primary' : undefined"
+      :variant="!(userData && userData.avatar) ? 'tonal' : undefined"
     >
       <VIcon icon="tabler-user" />
 
@@ -88,12 +88,12 @@ const userProfileList = [
                   style="padding-right: 7px"
                 >
                   <VAvatar
-                    :color="!(userData.data && userData.data.avatar) ? 'primary' : undefined"
-                    :variant="!(userData.data && userData.data.avatar) ? 'tonal' : undefined"
+                    :color="!(userData && userData.avatar) ? 'primary' : undefined"
+                    :variant="!(userData && userData.avatar) ? 'tonal' : undefined"
                   >
                     <VImg
-                      v-if="userData.data && userData.data.avatar"
-                      :src="userData.data.avatar"
+                      v-if="userData && userData.avatar"
+                      :src="userData.avatar"
                     />
                     <VIcon
                       v-else
@@ -101,7 +101,7 @@ const userProfileList = [
                     />
                   </VAvatar>
                 </VBadge>
-                {{ userData.data.role.name }}
+                {{ userData.role.name }}
               </VListItemAction>
             </template>
           </VListItem>

@@ -87,6 +87,7 @@ const changePassword = async () => {
                 isOldPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
               "
               :rules="[requiredValidator, passwordValidator]"
+              class="input-field"
               autocomplete="on"
               @click:append-inner="isOldPasswordVisible = !isOldPasswordVisible"
             />
@@ -100,6 +101,7 @@ const changePassword = async () => {
               :append-inner-icon="
                 isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
               "
+              class="input-field"
               :rules="[requiredValidator, passwordValidator]"
               autocomplete="on"
               @click:append-inner="isPasswordVisible = !isPasswordVisible"
@@ -115,6 +117,7 @@ const changePassword = async () => {
               :append-inner-icon="
                 isConfirmPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
               "
+              class="input-field"
               :rules="[
                 requiredValidator,
                 confirmedValidator(repeatPassword, password),

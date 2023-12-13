@@ -46,6 +46,10 @@
   "users": "Users",
   "pending_users": "Pending Users",
   "register_users": "Register User",
+  "link_card": "Link Card",
+  "active_card": "Active Card",
+  "deactivate_card": "Deactivate Card",
+
 
   "notification": {
     "category": "Category",
@@ -599,6 +603,12 @@
     "request_deleted_Successfully": "Request Deleted Successfully"
   },
   "general": {
+    "send": "Send",
+    "link_card": "Link Card",
+    "cards": "Cards",
+    "Islam": "Muslim",
+    "jewish": "Jewish",
+    "Christian": "Christian",
     "is_account": "Is Account",
     "select_reason": "Select Reason",
     "select_payment_method": "Select Payment Method",
@@ -758,14 +768,14 @@
     "gender_user": "Gender:",
     "id_type_user": "ID Type:",
     "id_num_user": "ID Num:",
-    "expiration_date_user": "Expiration Date:",
+    "expiration_date_user": "Expiration Date",
     "id_images_user": "ID Images:",
     "birth_date_user": "Birthdat:",
     "material_status_user": "Marital Status:",
     "home_phone_user": "Home Phone:",
     "address_user": "Address:",
     "city_user": "City:",
-    "religion_user": "Religion:",
+    "religion_user": "Religion",
     "education_user": "Education:",
     "user_details": "User Details",
     "employer_data": "Employer  Data",
@@ -964,7 +974,7 @@
     "excel": "Excel",
     "upload": "Upload",
     "import": "Import",
-    "search": "Search: ",
+    "search": "Search",
     "search_btn": "Search",
     "download": "Download",
     "download_template": "Download Template",
@@ -1388,6 +1398,7 @@
     "not_interested": "Not Interested"
   },
   "error": {
+    "field_is_required": "This field is required",
     "payment_method": "Payment Method is required",
     "bank_method": "Transfer Type is required",
     "bank_code": "Bank Name is required",

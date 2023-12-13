@@ -1,6 +1,9 @@
 <script setup>
 import { VForm } from 'vuetify/components/VForm'
 import axios from '@axios'
+import { useI18n } from "vue-i18n"
+
+const { t } = useI18n()
 
 const url = process.env.VUE_APP_BASE_URL 
 
@@ -18,12 +21,17 @@ const iconsSteps = [
     icon: 'tabler-camera-selfie',
   },
   {
-    title: 'Account Details',
+    title: 'Personal Info',
     icon: 'custom-address',
   },
+  {
+    title: 'Confirmation',
+    icon: 'tabler-checkbox',
+  },
+  
 ]
 
-const currentStep = ref(0)
+const currentStep = ref(4)
 const isCurrentStepValid = ref(true)
 const refFrontIdForm = ref()
 const refBackIdForm = ref()
@@ -35,9 +43,39 @@ const loading = ref(false)
 
 const userId = ref(31)
 
+const maritalStatus = ref([
+  { title: t('general.single'), value: 'SINGLE' },
+  { title: t('general.married'), value: 'MARRIED' },
+  { title: t('general.divorced'), value: 'DIVORCED' },
+  { title: t('general.widower'), value: 'WIDOW' },
+])
+
+const gender = ref([
+  { title: t('general.male'), value: 'MALE' },
+  { title: t('general.female'), value: 'FEMALE' },
+])
+
+const religion = ref([
+  { title: t('general.Islam'), value: 'MUSLIM' },
+  { title: t('general.Christian'), value: 'CHRISTIAN' },
+  { title: t('general.jewish'), value: 'JEWISH' },
+])
+
 const formData = ref({
-  firstName: 'johndoe',
-  lastName: 'john.doe@email.com',
+  name_en: '',
+  name_ar: '',
+  date_of_birth: '',
+  ocr_transaction_id: '',
+  government: '',
+  address_1: '',
+  address_2: '',
+  serial_number: '',
+  gender: '',
+  marital_status: '',
+  job_title: '',
+  religion: '',
+  id_number: '',
+  expiration_date: '',
 })
 
 const uploadImage = (image, type) => {
@@ -114,7 +152,7 @@ const handleSelfie = () => {
 </script>
 
 <template>
-  <VCard>
+  <div>
     <VCardText>
       <!-- 👉 Stepper -->
       <AppStepper
@@ -346,9 +384,20 @@ const handleSelfie = () => {
               md="6"
             >
               <AppTextField
-                v-model="formData.name"
+                v-model="formData.name_en"
                 class="input-field"
-                label="Name"
+                :label="$t('general.name_en')"
+              />
+            </VCol>
+
+            <VCol
+              cols="12"
+              md="6"
+            >
+              <AppTextField
+                v-model="formData.name_ar"
+                class="input-field"
+                :label="$t('general.name_ar')"
               />
             </VCol>
 
@@ -363,14 +412,54 @@ const handleSelfie = () => {
                 placeholder="Select date"
               />
             </VCol>
+
             <VCol
               cols="12"
               md="6"
             >
               <AppTextField
-                v-model="formData.nationalid"
+                v-model="formData.job_title"
                 class="input-field"
-                label="National ID"
+                :label="$t('general.jop_title')"
+              />
+            </VCol>
+
+            <VCol
+              cols="12"
+              md="6"
+            >
+              <AppSelect
+                v-model="formData.gender"
+                :items="gender"
+                :label="$t('user.gender')"
+                item-title="title"
+                item-value="value"
+              />
+            </VCol>
+
+            <VCol
+              cols="12"
+              md="6"
+            >
+              <AppSelect
+                v-model="formData.marital_status"
+                :items="maritalStatus"
+                :label="$t('user.marital_status')"
+                item-title="title"
+                item-value="value"
+              />
+            </VCol>
+
+            <VCol
+              cols="12"
+              md="6"
+            >
+              <AppSelect
+                v-model="formData.religion"
+                :items="religion"
+                :label="$t('user.religion')"
+                item-title="title"
+                item-value="value"
               />
             </VCol>
 
@@ -379,11 +468,24 @@ const handleSelfie = () => {
               md="6"
             >
               <AppTextField
-                v-model="formData.mobile"
+                v-model="formData.id_number"
                 class="input-field"
-                label="Mobile Number"
+                :label="$t('general.national_id')"
               />
             </VCol>
+
+            <VCol
+              cols="12"
+              md="6"
+            >
+              <AppDateTimePicker
+                v-model="formData.expiration_date"
+                class="input-field"
+                :label="$t('general.expiration_date')"
+                placeholder="Select date"
+              />
+            </VCol>
+
             <VCol
               cols="12"
               md="6"
@@ -421,7 +523,33 @@ const handleSelfie = () => {
             </VCol>
           </VRow>
         </VWindowItem>
+
+        <VWindowItem>
+          <div class="onboarding-success d-flex justify-center flex-column align-center mb-10">
+            <VIcon
+              class="mb-5"
+              icon="tabler-circle-check-filled" 
+              color="primary"
+              size="64"
+            />
+            <h3>User Onboarded Successfully</h3>
+          </div>
+          <div class="card-actions d-flex justify-center gap-10">
+            <VBtn color="success">
+              <VIcon
+                start
+                icon="tabler-circle-plus"
+              />Link New Card
+            </VBtn>
+            <VBtn color="success">
+              <VIcon
+                start
+                icon="tabler-home"
+              />Back to home
+            </VBtn>
+          </div>
+        </VWindowItem>
       </VWindow>
     </VCardText>
-  </VCard>
+  </div>
 </template>
