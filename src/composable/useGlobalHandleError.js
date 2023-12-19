@@ -1,23 +1,13 @@
-import Swal from "sweetalert2/dist/sweetalert2"
-import "sweetalert2/src/sweetalert2.scss"
+import { useToast } from '@/composable/useToast'
 
 export function useGlobalHandleError(){
   const errors = ref([])
 
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 2000,
-    timerProgressBar: true,
-  })
+  const { showToast } = useToast()
 
   const displayErrors = () => {
     errors.value.forEach(error => {
-      Toast.fire({
-        icon: "error",
-        title: error.message,
-      })
+      showToast(error.message, { icon: 'error' })
     })
   }
 
@@ -27,7 +17,6 @@ export function useGlobalHandleError(){
   }
     
   return {
-    errors,
     setErrors,
   }
 }

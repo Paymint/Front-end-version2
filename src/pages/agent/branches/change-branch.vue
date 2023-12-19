@@ -14,7 +14,7 @@ const { t } = useI18n()
 const UserStore = useUserStore()
 const { setErrors } = useGlobalHandleError()
 
-const title = ref(`${t("active_card")}`)
+const title = ref(`${t("change_branch")}`)
 
 const nationalId = ref(null)
 const refDataVForm = ref(null)
@@ -22,6 +22,7 @@ const loading = ref(false)
 const isDialogVisible = ref(false)
 const userData = ref([])
 const cardData = ref([])
+const branchData = ref([])
 
 
 const formErrors = ref({
@@ -40,7 +41,7 @@ const items = [
     disabled: true,
   },
   {
-    title: t('active_card'),
+    title: t('change_branch'),
     disabled: true,
   },
 ]
@@ -58,13 +59,12 @@ const checkUserFound = async () => {
 
     const response = await UserStore.getUserByNationalID(data)
 
-    
-    console.log(response.data.user)
     if(response.status){
       loading.value = false
       isDialogVisible.value = true
       userData.value = response.data.user
       cardData.value = response.data.card
+      branchData.value = response.data.branch
     }
   } catch (e) { 
     loading.value = false
@@ -83,7 +83,7 @@ const checkUser = () => {
 <template>
   <div class="add-user">
     <VRow class="mb-5">
-      <VCol cols="12 d-flex justify-space-between ">
+      <VCol cols="12 d-flex justify-space-between">
         <PageHeader 
           :items="items" 
           :title="title"
@@ -141,7 +141,8 @@ const checkUser = () => {
       v-model:isDialogVisible="isDialogVisible"
       :user-data="userData"
       :card-data="cardData"
-      type="activate"
+      :branch="branchData"
+      type="change-branch"
     />
   </div>
 </template>

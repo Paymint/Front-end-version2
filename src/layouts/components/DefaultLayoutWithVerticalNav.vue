@@ -16,6 +16,8 @@ import { VerticalNavLayout } from '@layouts'
 
 const { appRouteTransition, isLessThanOverlayNavBreakpoint } = useThemeConfig()
 const { width: windowWidth } = useWindowSize()
+
+const role = JSON.parse(localStorage.getItem('userData')).role.name
 </script>
 
 <template>
@@ -35,14 +37,20 @@ const { width: windowWidth } = useWindowSize()
           />
         </IconBtn>
 
-        <NavSearchBar class="ms-lg-n3" />
+        <NavSearchBar
+          v-if="role !== 'Agent'"  
+          class="ms-lg-n3" 
+        />
 
         <VSpacer />
 
         <NavBarBalance />
         <NavBarI18n class="me-1" />
         <NavbarThemeSwitcher class="me-1" />
-        <NavBarNotifications class="me-2" />
+        <NavBarNotifications 
+          v-if="role !== 'Agent'" 
+          class="me-2" 
+        />
         <UserProfile />
       </div>
     </template>

@@ -4,19 +4,23 @@ import { VForm } from "vuetify/components/VForm"
 import { useI18n } from "vue-i18n"
 import { useUserStore } from "@/store/agent/useUserStore"
 import { useGlobalHandleError } from "@/composable/useGlobalHandleError"
+import {
+  requiredValidator,
+} from "@validators"
+import UserDataDialog from "@/views/agent/users/VerifyUser.vue"
 
 const { t } = useI18n()
 const UserStore = useUserStore()
-const { errors, setErrors } = useGlobalHandleError()
+const { setErrors } = useGlobalHandleError()
 
 const title = ref(`${t("deactivate_card")}`)
 
-const linkCardStep = ref('link_step_one')
 const nationalId = ref(null)
 const refDataVForm = ref(null)
-const refCardVForm = ref(null)
 const loading = ref(false)
-const isPinDialogVisible = ref(false)
+const isDialogVisible = ref(false)
+const userData = ref([])
+const cardData = ref([])
 
 
 const formErrors = ref({
@@ -42,39 +46,36 @@ const items = [
 
 
 
-/* otp */
-const updateStep = data => {
-  linkCardStep.value = data
-}
+const checkUserFound = async () => {
+  loading.value = true
 
-const checkUserFound = () => {
-  console.log("FF")
-}
+  let data = {
+    national_id: nationalId.value,
+  }
 
-const linkCard = () => {
-  console.log("DFFFD")
-}
+  try {
 
-const verifyData = async data => {
+    const response = await UserStore.getUserByNationalID(data)
 
-  Swal.fire({
-    title: "Card has been activated successfully",
-    icon: "success",
-    confirmButtonText: "Activate another card",
-    showCancelButton: true,
-  })
+    
+    console.log(response.data.user)
+    if(response.status){
+      loading.value = false
+      isDialogVisible.value = true
+      userData.value = response.data.user
+      cardData.value = response.data.card
+    }
+  } catch (e) { 
+    loading.value = false
+    setErrors(e.response.data.errors)
+  }
+ 
 }
 
 const checkUser = () => {
   refDataVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) checkUserFound()
   })
-}
-
-const checkCard = () => {
-  refCardVForm.value?.validate().then(({ valid: isValid }) => {
-    if (isValid) linkCard()
-  }) 
 }
 </script>
 
@@ -89,7 +90,7 @@ const checkCard = () => {
       </VCol>
     </VRow>
 
-    <VCard v-if="linkCardStep === 'link_step_one'">
+    <VCard>
       <VCardText>
         <VForm
           ref="refDataVForm"
@@ -97,13 +98,17 @@ const checkCard = () => {
           @submit.prevent="checkUser"
         >
           <VRow>
-            <VCol cols="6">
+            <VCol 
+              cols="6"
+              sm="6"
+            >
               <VTextField
                 v-model="nationalId"
                 prepend-inner-icon="tabler-id-badge"
                 class="input-field"
                 variant="outlined"
                 :error-messages="formErrors.nationalId"
+                :rules="[requiredValidator]"
                 label="National"
                 type="text"
               />
@@ -111,6 +116,7 @@ const checkCard = () => {
 
             <VCol 
               class="d-flex flex-end"
+              sm="6"
               cols="12"
             >
               <VBtn
@@ -118,6 +124,11 @@ const checkCard = () => {
                 type="submit"
               >
                 {{ $t("general.search") }}
+                <template #loader>
+                  <span class="custom-loader">
+                    <VIcon icon="tabler-refresh" />
+                  </span>
+                </template>
               </VBtn>
             </VCol>
           </VRow>
@@ -125,47 +136,11 @@ const checkCard = () => {
       </VCardText>
     </VCard>
 
-    <VCard v-if="linkCardStep === 'link_step_two'">
-      <VCardText>
-        <VCardText>
-          <VForm
-            ref="refCardVForm"
-            class="form-horizontal"
-            @submit.prevent="checkCard"
-          >
-            <VRow>
-              <VCol cols="6">
-                <VTextField
-                  v-model="cardNumber"
-                  prepend-inner-icon="tabler-credit-card"
-                  class="input-field"
-                  variant="outlined"
-                  :error-messages="formErrors.cardNumber"
-                  label="Card Number"
-                  type="text"
-                />
-              </VCol>
-
-              <VCol 
-                class="d-flex flex-end"
-                cols="12"
-              >
-                <VBtn
-                  :loading="loading"
-                  type="submit"
-                >
-                  {{ $t("general.link_card") }}
-                </VBtn>
-              </VCol>
-            </VRow>
-          </VForm>
-        </VCardText>  
-      </VCardText>  
-    </VCard>
-
-    <PinCode 
-      v-model:isDialogVisible="isPinDialogVisible" 
-      @is-verified="verifyData"
+    <UserDataDialog 
+      v-model:isDialogVisible="isDialogVisible"
+      :user-data="userData"
+      :card-data="cardData"
+      type="deactivate"
     />
   </div>
 </template>

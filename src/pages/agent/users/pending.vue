@@ -109,6 +109,7 @@ onMounted(() => {
         <UserDataDialog 
           v-model:isDialogVisible="isDialogVisible"
           :user-data="itemData" 
+          type="verify"
         />
       </VCol>
     </VRow>

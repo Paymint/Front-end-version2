@@ -10,19 +10,7 @@
     </VRow>
 
     <VRow>
-      <VCol 
-        cols="12" 
-        sm="5" 
-        lg="4"
-      >
-        <UserBioProfile />
-      </VCol>
-
-      <VCol 
-        cols="12" 
-        sm="7" 
-        lg="8"
-      >
+      <VCol cols="12">
         <VTabs 
           v-model="profileTab" 
           class="v-tabs-pill"
@@ -46,10 +34,10 @@
           :touch="false"
         >
           <VWindowItem>
-            <ChangePassword />
+            <UserBioProfile />
           </VWindowItem>
           <VWindowItem>
-            <ChangePin />
+            <ChangePassword />
           </VWindowItem>
         </VWindow>
       </VCol>
@@ -58,9 +46,8 @@
 </template>
 
 <script setup>
-import UserBioProfile from "@/views/profile/userBioProfile.vue"
+import UserBioProfile from "@/views/profile/tabs/userBioProfile.vue"
 import { useI18n } from "vue-i18n"
-import ChangePin from '@/views/profile/tabs/changePin.vue'
 import ChangePassword from '@/views/profile/tabs/changePassword.vue'
 
 const { t } = useI18n()
@@ -81,12 +68,12 @@ const items = [
 
 const tabs = [
   {
-    icon: 'tabler-key',
-    title: 'Change Password',
+    icon: 'tabler-users',
+    title: 'Account',
   },
   {
-    icon: 'tabler-password-user',
-    title: 'Change Pin',
+    icon: 'tabler-lock',
+    title: 'Security',
   },
 ]
 

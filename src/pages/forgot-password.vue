@@ -11,10 +11,11 @@ import Swal from "sweetalert2/dist/sweetalert2"
 import "sweetalert2/src/sweetalert2.scss"
 import { useAuthStore } from "@/store/auth/authStore"
 import { useI18n } from "vue-i18n"
+import { useToast } from '@/composable/useToast'
 import EgyptIcon from "@images/egypt.png"
-import { computed } from 'vue'
 
-const { errors, setErrors } = useGlobalHandleError()
+const { setErrors } = useGlobalHandleError()
+const { showToast } = useToast()
 const { checkIfEgyptPhoneNumber } = useEgyptPhoneNumber()
 const authStore = useAuthStore()
 const { t } = useI18n()
@@ -131,15 +132,10 @@ const handleErrors = err => {
   if(err.response) {
     const { status, data } = err.response
 
-    Toast.fire({
-      icon: "error",
-      title: data.message,
-    })
-
     if (status === 422) {
       setErrors(data.errors)
     } else {
-      router.push('/admin/403')
+      showToast(data.message, { icon: 'error' })
     }
   }
 }
@@ -271,8 +267,25 @@ const handleErrors = err => {
         <VCardText v-if="isDataConfirmed == 'confirm-otp'">
           <AppOTPComponent 
             :forget-password-token="forgetPasswordToken"
+            otp-type="forgetPassword"
             @set-confirm-password="updateDataConfirmed" 
-          />
+          >
+            <template #back>
+              <!-- back to login -->
+              <VCol cols="12">
+                <RouterLink
+                  class="d-flex align-center justify-center"
+                  :to="{ name: 'login' }"
+                >
+                  <VIcon
+                    icon="tabler-chevron-left"
+                    class="flip-in-rtl"
+                  />
+                  <span>Back to login</span>
+                </RouterLink>
+              </VCol>  
+            </template>
+          </AppOTPComponent>
         </VCardText>
         <VCardText v-if="isDataConfirmed == 'confirm-new-password'">
           <h5 class="text-h5 mb-6">

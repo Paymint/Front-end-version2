@@ -5,6 +5,8 @@ import { useUserStore } from "@/store/agent/useUserStore"
 import { useGlobalHandleError } from "@/composable/useGlobalHandleError"
 import EgyptIcon from "@images/egypt.png"
 import { useToast } from '@/composable/useToast'
+import { useIdValidator } from "@/composable/useIdValidator"
+import { useEgyptPhoneNumber } from "@/composable/useEgyptPhoneNumber"
 
 
 /********* emit ***********/
@@ -15,20 +17,14 @@ const emit = defineEmits(['userFound'])
 const { t } = useI18n()
 const UserStore = useUserStore()
 const { setErrors } = useGlobalHandleError()
+const { checkIfEgyptPhoneNumber } = useEgyptPhoneNumber()
 const { showToast } = useToast()
-
-
-// toast example use
-// function trigger() {
-//   const errorMessage = 'Something went wrong!'
-
-//   showToast(errorMessage, { icon: 'success' })
-// }
+const { isValidNationalID, isValidPassportID, isValidBirthdate } = useIdValidator()
 
 /******** reactive data ***********/
 const nationalId = ref(null)
 const passportID = ref(null)
-const expireDate = ref(null)
+const birthDate = ref(null)
 const mobile = ref(null)
 const loading = ref(false)
 const selectedType = ref(null)
@@ -48,6 +44,28 @@ const types = ref([
 /******* methods **********/
 const checkUser = async () => {
   loading.value = true
+
+  console.log(isValidNationalID(nationalId.value))
+
+  if (!checkIfEgyptPhoneNumber(mobile.value)) {
+    loading.value = false
+
+    return false
+  }
+
+  if (selectedType.value === 'nationalId' && !isValidNationalID(nationalId.value)) {
+    return showToast(t('error.national_invalid'), { icon: 'error' })
+  }
+
+  if (selectedType.value === 'passport') {
+    if (!isValidPassportID(passportID.value)) {
+      return showToast(t('error.passport_invalid'), { icon: 'error' })
+    }
+
+    if (!isValidBirthdate(birthDate.value)) {
+      return showToast(t('error.birth_date_invalid'), { icon: 'error' })
+    }
+  }
 
   try {
 
@@ -75,7 +93,7 @@ const checkUser = async () => {
 /********* computed **********/
 const isBtnDisabled = computed(() => {
   if (selectedType.value === 'passport') {
-    return !expireDate.value || !passportID.value || mobile.value === null
+    return !birthDate.value || !passportID.value || mobile.value === null
   } else if (selectedType.value === 'nationalId') {
     return !nationalId.value || mobile.value === null
   }
@@ -139,9 +157,9 @@ const isBtnDisabled = computed(() => {
           sm="6"
         >
           <AppDateTimePicker
-            v-model="expireDate"
+            v-model="birthDate"
             class="input-field"
-            :label="$t('general.expiration_date_user')"
+            :label="$t('user.birth_date')"
             variant="outlined"
           />
         </VCol>

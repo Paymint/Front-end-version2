@@ -49,6 +49,8 @@
   "link_card": "Link Card",
   "active_card": "Active Card",
   "deactivate_card": "Deactivate Card",
+  "close_card": "Close Card",
+  "change_branch": "Change Branch",
 
 
   "notification": {
@@ -244,6 +246,7 @@
     "set_pin": "Set Personal PIN",
     "reset_pin": "Reset Your PIN",
     "change_pin": "Change Your PIN",
+    "change_my_pin": "Change My PIN",
     "pin_not_correct": "PIN Not Correct",
     "check": "Check",
     "save": "Save",
@@ -1324,7 +1327,7 @@
     "new_password": "New Password",
     "enter_old_password": "Enter Old Password",
     "enter_new_password": "Enter New Password",
-    "confirm_new_password": "Confirm Password",
+    "confirm_new_password": "Confirm New Password",
     "confirm_password": "Confirm Password",
     "enter_confirm_new_password": "Enter Confirm Password",
     "enter_confirm_qr_code": "Enter Qr Confirm Code",
@@ -1404,6 +1407,7 @@
     "bank_code": "Bank Name is required",
     "national_required": "National Id is required",
     "national_invalid": "National Id is Invalid",
+    "passport_invalid": "Passport Id is Invalid",
     "IBAN_required": "IBAN is required",
     "IBAN_EG": "IBAN must start with EG",
     "IBAN_Invalid": "IBAN is Invalid",
@@ -1449,6 +1453,7 @@
     "Name_en_not_arabic": "English Name should be arabic characters",
     "mobile_required": "Mobile Number is required.",
     "birth_date_required": "Birthdate is required.",
+    "birth_date_invalid": "Birthdate is not correct.",
     "birth_date_not_correct": "Birthdate should be older than 16 years old",
     "abbreviation_required": "Abbreviation is required.",
     "name_required": "Name is required.",
@@ -1680,6 +1685,6 @@
     "instant_deposit": "Instant Deposit"
   },
   "table": {
-    "no_data_available": "No Data Available",
+    "no_data_available": "No Data Available"
   }
 }

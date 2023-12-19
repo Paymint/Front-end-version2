@@ -141,11 +141,17 @@ import { onMounted, reactive, ref } from "vue"
 import PageHeader from "@/components/page-header.vue"
 import ListView from "./list-view/index.vue"
 import { useI18n } from "vue-i18n"
-import CompanyService from "@/services/CompanyService"
+import { useCompanyService } from "@/store/companies/useCompanyService"
+
 
 const { t } = useI18n()
 
 // import GridView from "./grid-view/index.vue"
+
+
+
+/* composables */
+const companyStore = useCompanyService()
 
 /* reactive data */
 
@@ -175,7 +181,7 @@ const items = reactive([
 const getComWithTransactionStatus = async () => {
   /******* st get data ******/
   try {
-    const response = await CompanyService.getAllTransactionStatus()
+    const response = await companyStore.getAllTransactionStatus()
 
     cards.value = response.data
   } catch (err) {
@@ -214,7 +220,7 @@ const refreshClientsApi = () => {
 
 const getCompaniesData = async () => {
   try {
-    const response = await CompanyService.getAllCompanies(transaction_status_active.value, apiStatus.value)
+    const response = await companyStore.getAllCompanies(transaction_status_active.value, apiStatus.value)
 
     companiesData.value = response.data
   } catch (err) {

@@ -1,6 +1,7 @@
 <script setup>
 import { useAppAbility } from "@/plugins/casl/useAppAbility"
 import axios from "@axios"
+import { useGlobalHandleError } from "@/composable/useGlobalHandleError"
 import { VNodeRenderer } from "@layouts/components/VNodeRenderer"
 import { themeConfig } from "@themeConfig"
 import { requiredValidator } from "@validators"
@@ -12,6 +13,8 @@ const isPasswordVisible = ref(false)
 const route = useRoute()
 const router = useRouter()
 const ability = useAppAbility()
+const { setErrors } = useGlobalHandleError()
+
 
 const errors = ref({
   user_name: undefined,
@@ -61,7 +64,9 @@ const login = () => {
         router.replace(route.query.to ? String(route.query.to) : '/')
 
       }
-    }).catch(() => {
+    }).catch(err => {
+      console.error(err.response.data.errors)
+      setErrors(err.response.data.errors)
       loading.value = false
     })
 }

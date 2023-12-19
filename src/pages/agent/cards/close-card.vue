@@ -14,7 +14,7 @@ const { t } = useI18n()
 const UserStore = useUserStore()
 const { setErrors } = useGlobalHandleError()
 
-const title = ref(`${t("active_card")}`)
+const title = ref(`${t("close_card")}`)
 
 const nationalId = ref(null)
 const refDataVForm = ref(null)
@@ -40,7 +40,7 @@ const items = [
     disabled: true,
   },
   {
-    title: t('active_card'),
+    title: t('close_card'),
     disabled: true,
   },
 ]
@@ -141,7 +141,7 @@ const checkUser = () => {
       v-model:isDialogVisible="isDialogVisible"
       :user-data="userData"
       :card-data="cardData"
-      type="activate"
+      type="close-card"
     />
   </div>
 </template>

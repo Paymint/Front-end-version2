@@ -1,9 +1,11 @@
 <script setup>
 import { VForm } from 'vuetify/components/VForm'
+import { useRouter } from 'vue-router'
 import axios from '@axios'
 import { useI18n } from "vue-i18n"
 
 const { t } = useI18n()
+const router = useRouter()
 
 const url = process.env.VUE_APP_BASE_URL 
 
@@ -31,7 +33,7 @@ const iconsSteps = [
   
 ]
 
-const currentStep = ref(4)
+const currentStep = ref(3)
 const isCurrentStepValid = ref(true)
 const refFrontIdForm = ref()
 const refBackIdForm = ref()
@@ -126,6 +128,10 @@ const onSelfieIdChange = e => {
   selfieID.value = e.target.files[0]
 }
 
+
+const goToLinkCard = () => {
+  router.push('/agent/cards/link-card')
+}
 
 
 const backToPrevious = () => {
@@ -535,13 +541,16 @@ const handleSelfie = () => {
             <h3>User Onboarded Successfully</h3>
           </div>
           <div class="card-actions d-flex justify-center gap-10">
-            <VBtn color="success">
+            <VBtn 
+              color="success"
+              @click="goToLinkCard"
+            >
               <VIcon
                 start
                 icon="tabler-circle-plus"
               />Link New Card
             </VBtn>
-            <VBtn color="success">
+            <VBtn color="secondary">
               <VIcon
                 start
                 icon="tabler-home"

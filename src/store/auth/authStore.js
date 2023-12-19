@@ -39,6 +39,17 @@ export const useAuthStore = defineStore('authStore', {
     reSendOTP(credentials) {
       return axios.post(baseUrl+`resend-otp`, credentials).then(response => response.data)
     },
-
+    checkPin(credentials) {
+      return axios.post(baseUrl +`check-personal-pin`, credentials).then(response => response.data)
+    },
+    setPin(credentials) {
+      return axios.post(baseUrl +`set-personal-pin`, credentials).then(response => response.data)
+    },
+    resetPin() {
+      return axios.post(url+`reset-pin`).then(response => response.data);
+    },
+    verifyPinOtp(credentials) {
+      return axios.post(url+`verify-pin-otp`, credentials).then(response => response.data);
+    },
   },
 })

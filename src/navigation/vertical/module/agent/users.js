@@ -24,5 +24,15 @@ export default [
     icon: { icon: 'tabler-credit-card-off' },
     to: 'agent-cards-deactivate-card',
   },
+  {
+    title: 'close_card',
+    icon: { icon: 'tabler-credit-card-off' },
+    to: 'agent-cards-close-card',
+  },
+  {
+    title: 'change_branch',
+    icon: { icon: 'tabler-git-merge' },
+    to: 'agent-branches-change-branch',
+  },
 ]
         

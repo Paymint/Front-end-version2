@@ -13,11 +13,9 @@ import { useGlobalHandleError } from "@/composable/useGlobalHandleError"
 
 const { t } = useI18n()
 const authStore = useAuthStore()
-const { errors, setErrors } = useGlobalHandleError() 
+const { setErrors } = useGlobalHandleError() 
 const userRefNumber = JSON.parse(localStorage.getItem("user_ref_number"))
-const baseUrl = process.env.VUE_APP_BASE_URL 
 
-const refVForm = ref()
 const codes = ref([])
 const qrimage = ref(null)
 const showQrCodeForm = ref("generateForm")

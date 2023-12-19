@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from "vue"
-import CompanyService from "@/services/CompanyService"
+import { useCompanyService } from "@/store/companies/useCompanyService"
 
 
 /* props */
@@ -16,6 +16,10 @@ const emit = defineEmits([
   'emitAgents',
   'increaseCounter',
 ])
+
+
+/* composables */
+const companyStore = useCompanyService()
 
 /* data reactive */
 const isDialogVisible = ref(false)
@@ -48,14 +52,13 @@ const closeDialog = ()  => {
 const getSales = async () => {
   /******* st get data ******/
   try {
-    const response = await CompanyService.getAllAgents()
+    const response = await companyStore.getAllAgents()
     
     agents.value = response.data
-
-    // Object.keys(response.data).map(k => ({
-    //   id: response.data[k].id,
-    //   name: response.data[k].name,
-    // }))
+    Object.keys(response.data).map(k => ({
+      id: response.data[k].id,
+      name: response.data[k].name,
+    }))
   } catch (err) {
     console.error(err)
   }

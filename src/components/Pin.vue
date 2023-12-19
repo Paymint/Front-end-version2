@@ -1,8 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import { VForm } from "vuetify/components/VForm"
-import { useGlobalHandleError } from "@/composable/useGlobalHandleError"
-import { useUserStore } from "@/store/agent/useUserStore"
+import { useAuthStore } from "@/store/auth/authStore"
 import { useI18n } from "vue-i18n"
 import otpSrc from "@images/otp.png"
 
@@ -12,6 +11,9 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+  pinType: {
+    type: String,
+  },
 })
 
 const emit = defineEmits(['update:isDialogVisible', 'isVerified'])
@@ -20,8 +22,7 @@ const dialogVisibleUpdate = val => {
   emit('update:isDialogVisible', val)
 }
 
-const { setErrors } = useGlobalHandleError()
-const authStore = useUserStore()
+const authStore = useAuthStore()
 const { t } = useI18n()
 
 const isOtpCompleted = ref(false)
@@ -46,24 +47,38 @@ const updatePin = data => {
 
 const confirmPinData = async () => {
   loading.value = true
+  isSuccess.value = false
+  isError.value = false
+
 
   try {
     const credentials = {
       personal_pin: otpNumber.value,
     }
 
-    const response = await authStore.checkPin(credentials)
+    let response
+
+    if (props.pinType === 'check') {
+      response = await authStore.checkPin(credentials)
+    }
+    if (props.pinType === 'set') {
+      response = await authStore.setPin(credentials)
+    }
+
     if(response.status) {
       isSuccess.value = true
-      successMsg.value = response.message
+      successMsg.value = t('pin.pin_set_successfully')
       emit('isVerified', otpNumber.value)
       loading.value = false
-    } else{
-      loading.value = false
+    } else {
       isError.value = true
       errMsg.value = response.message
+      loading.value = false
     }
+
+    console.log(isError.value)
   } catch (err) {
+
     loading.value = false
     isError.value = true
     errMsg.value = err.response.data.message
@@ -123,7 +138,12 @@ const onSubmitUpdatePin = () => {
                 type="submit"
                 :loading="loading"
               >
-                Verify
+                <span v-if="props.pinType === 'set'">
+                  Set PIN
+                </span>
+                <span v-if="props.pinType === 'check'">
+                  Verify PIN
+                </span>
                 <template #loader>
                   <span class="custom-loader">
                     <VIcon icon="tabler-refresh" />
@@ -137,6 +157,14 @@ const onSubmitUpdatePin = () => {
             >
               <VAlert type="error">
                 {{ errMsg }}
+              </VAlert>  
+            </VCol>
+            <VCol
+              v-if="isSuccess" 
+              cols="12"
+            >
+              <VAlert type="success">
+                {{ successMsg }}
               </VAlert>  
             </VCol>
           </VRow>

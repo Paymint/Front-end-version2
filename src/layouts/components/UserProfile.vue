@@ -2,7 +2,6 @@
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 import { initialAbility } from '@/plugins/casl/ability'
 import { useAppAbility } from '@/plugins/casl/useAppAbility'
-import { onMounted } from 'vue'
 import { useRouter } from "vue-router"
 
 const router = useRouter()
@@ -36,11 +35,6 @@ const userProfileList = [
     to: {
       name: 'admin-my-profile',
     },
-  },
-  {
-    type: 'navItem',
-    icon: 'tabler-settings',
-    title: 'Settings',
   },
   {
     type: 'navItem',

@@ -5,6 +5,10 @@ import { VForm } from "vuetify/components/VForm"
 import { useI18n } from "vue-i18n"
 import { useUserStore } from "@/store/agent/useUserStore"
 import { useGlobalHandleError } from "@/composable/useGlobalHandleError"
+import PinCode from "@/components/Pin.vue"
+import Swal from "sweetalert2/dist/sweetalert2"
+import "sweetalert2/src/sweetalert2.scss"
+
 
 const { t } = useI18n()
 const UserStore = useUserStore()
@@ -48,26 +52,31 @@ const items = [
 
 
 /* otp */
-const updateStep = data => {
-  linkCardStep.value = data
-}
-
 const checkUserFound = () => {
-  console.log("FF")
+  loading.value = true
+  
+  setTimeout(() => {
+    isPinDialogVisible.value = true
+
+    loading.value = false
+
+  }, 2000)
+
 }
 
 const linkCard = () => {
-  console.log("DFFFD")
-}
-
-const verifyData = async data => {
-
   Swal.fire({
     title: "Card Linked Successfully",
     icon: "success",
     confirmButtonText: "Activate Card",
+    confirmButtonColor: "#28C76F",
+    cancelButtonColor: "#EA5455",
     showCancelButton: true,
   })
+}
+
+const verifyData = async data => {
+  console.log("DDD")
 }
 
 const checkUser = () => {
@@ -142,6 +151,11 @@ const checkCard = () => {
                 type="submit"
               >
                 {{ $t("pin.check") }}
+                <template #loader>
+                  <span class="custom-loader">
+                    <VIcon icon="tabler-refresh" />
+                  </span>
+                </template>
               </VBtn>
             </VCol>
           </VRow>
@@ -158,7 +172,10 @@ const checkCard = () => {
             @submit.prevent="checkCard"
           >
             <VRow>
-              <VCol cols="6">
+              <VCol 
+                cols="6"
+                sm="6"  
+              >
                 <VTextField
                   v-model="cardNumber"
                   prepend-inner-icon="tabler-credit-card"
@@ -173,6 +190,7 @@ const checkCard = () => {
               <VCol 
                 class="d-flex flex-end"
                 cols="12"
+                sm="6"
               >
                 <VBtn
                   :loading="loading"
@@ -189,6 +207,7 @@ const checkCard = () => {
 
     <PinCode 
       v-model:isDialogVisible="isPinDialogVisible" 
+      pin-type="check"
       @is-verified="verifyData"
     />
   </div>
