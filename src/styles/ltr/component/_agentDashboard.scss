@@ -1,0 +1,46 @@
+
+.agent-dashboard{
+  position: relative;
+  overflow: hidden;
+
+  .short-links{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px 0px;
+    .short-link{
+      border: 1px solid #eee;
+      box-shadow: 1px 1px 3px #dbe9e1;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      transition: 0.4s ease all;
+      border-radius: 5px;
+
+      .short-link-icon{
+        color: #28C76F;
+      }
+      .short-link-title{
+        margin-top: 5px;
+        font-weight: 600;
+        color: #000;
+      }
+
+      &:hover{
+        background: #28C76F;
+        .short-link-icon{
+          color: #fff;
+        }
+        .short-link-title{
+          color: #fff;
+        }
+      }
+    }
+  }
+}

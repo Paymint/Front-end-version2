@@ -14,7 +14,7 @@ const { t } = useI18n()
 const UserStore = useUserStore()
 const { setErrors } = useGlobalHandleError()
 
-const title = ref(`${t("active_card")}`)
+const title = ref(`${t("change_to_company")}`)
 
 const nationalId = ref(null)
 const refDataVForm = ref(null)
@@ -36,11 +36,11 @@ const items = [
     href: 'dashboard',
   },
   {
-    title: t('general.cards'),
+    title: t('general.users'),
     disabled: true,
   },
   {
-    title: t('active_card'),
+    title: t('change_to_company'),
     disabled: true,
   },
 ]
@@ -55,8 +55,9 @@ const checkUserFound = async () => {
   }
 
   try {
-    
+
     const response = await UserStore.getUserByNationalID(data)
+
     
     if(response.status){
       loading.value = false
@@ -139,7 +140,7 @@ const checkUser = () => {
       v-model:isDialogVisible="isDialogVisible"
       :user-data="userData"
       :card-data="cardData"
-      type="activate"
+      type="close-card"
     />
   </div>
 </template>
