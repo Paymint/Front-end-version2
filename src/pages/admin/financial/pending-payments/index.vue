@@ -171,7 +171,7 @@ const items = [
   {
     title: 'Dashboard',
     disabled: false,
-    href: 'dashboard',
+    to: '/',
   },
   {
     title: t("menuitems.financial.list.pending_payments.text"),

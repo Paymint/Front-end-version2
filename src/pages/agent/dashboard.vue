@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
 import { useI18n } from "vue-i18n"
+import AOS from 'aos'
 
 
 /*********** Composables *****************/
@@ -53,10 +54,14 @@ const title = t("dashboard_navbar_title")
 const items = [
   {
     title: 'Dashboard',
-    disabled: false,
-    href: 'dashboard',
+    disabled: true,
+    to: '/',
   },
 ]
+
+onMounted(() => {
+  AOS.init()
+})
 </script>
 
 <template>
@@ -78,6 +83,7 @@ const items = [
             :key="i"
             :to="router.path"
             class="short-link"
+            data-aos="zoom-in-up"
           >
             <VIcon 
               :icon="router.icon" 

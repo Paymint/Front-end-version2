@@ -47,7 +47,7 @@ const items = [
   {
     title: 'Dashboard',
     disabled: false,
-    href: 'dashboard',
+    to: '/',
   },
   {
     title: `${t('menuitems.companies.text')}`,
