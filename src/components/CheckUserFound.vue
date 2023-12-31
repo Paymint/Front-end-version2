@@ -45,7 +45,6 @@ const types = ref([
 const checkUser = async () => {
   loading.value = true
 
-  console.log(isValidNationalID(nationalId.value))
 
   if (!checkIfEgyptPhoneNumber(mobile.value)) {
     loading.value = false
@@ -54,6 +53,8 @@ const checkUser = async () => {
   }
 
   if (selectedType.value === 'nationalId' && !isValidNationalID(nationalId.value)) {
+    loading.value = false
+    
     return showToast(t('error.national_invalid'), { icon: 'error' })
   }
 
@@ -73,20 +74,20 @@ const checkUser = async () => {
       national_id: nationalId.value,
       mobile_number: mobile.value,
       source: 'agent',
+      id_type: selectedType.value === 'nationalId' ? 0 : 1,
     }
 
     const response = await UserStore.registerUser(payload)
 
     if (response.status) { 
       loading.value = false
-      emit('userFound')
+      showToast(response.message, { icon: 'success' })
+      emit('userFound', response.data)
     }
 
   } catch (err) { 
-    if(err.response.status == 422){
-      loading.value = false
-      setErrors(err.response.data.errors)
-    }
+    loading.value = false
+    setErrors(err.response.data.errors)
   }
 }
 

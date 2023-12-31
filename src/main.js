@@ -15,6 +15,8 @@ import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import Toast from "vue-toastification"
 import "vue-toastification/dist/index.css"
+import 'aos/dist/aos.css'
+
 
 loadFonts()
 

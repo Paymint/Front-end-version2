@@ -25,7 +25,7 @@ const items = reactive([
   {
     title: 'Dashboard',
     disabled: false,
-    href: 'dashboard',
+    to: '/',
   },
   {
     title: `${t('general.sales_management')}`,
