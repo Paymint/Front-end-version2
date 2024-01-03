@@ -7,7 +7,10 @@
     :class="props.class"
   >
     <slot />
-    <VBreadcrumbs :items="props.items">
+    <VBreadcrumbs 
+      :items="props.items" 
+      divider="/"
+    >
       <template #title="{ item }">
         <span style="font-size: 14px;">
           {{ item.title }}
@@ -25,9 +28,6 @@ const props = defineProps({
   },
   items: {
     type: Array,
-    default: () => {
-      return []
-    },
   },
   class: {
     type: String,

@@ -1,19 +1,20 @@
 <script setup>
 import { ref } from "vue"
 import { VForm } from "vuetify/components/VForm"
-import { useI18n } from "vue-i18n"
-import { useUserStore } from "@/store/agent/useUserStore"
-import { useGlobalHandleError } from "@/composable/useGlobalHandleError"
 import {
   requiredValidator,
 } from "@validators"
+import { useI18n } from "vue-i18n"
+import { useUserStore } from "@/store/agent/useUserStore"
+import { useGlobalHandleError } from "@/composable/useGlobalHandleError"
 import UserDataDialog from "@/views/agent/users/VerifyUser.vue"
+
 
 const { t } = useI18n()
 const UserStore = useUserStore()
 const { setErrors } = useGlobalHandleError()
 
-const title = ref(`${t("deactivate_card")}`)
+const title = ref(`${t("change_to_company")}`)
 
 const nationalId = ref(null)
 const refDataVForm = ref(null)
@@ -35,17 +36,17 @@ const items = [
     to: '/',
   },
   {
-    title: t('general.cards'),
+    title: t('general.users'),
     disabled: true,
   },
   {
-    title: t('deactivate_card'),
+    title: t('change_to_company'),
     disabled: true,
   },
 ]
 
 
-
+/* otp */
 const checkUserFound = async () => {
   loading.value = true
 
@@ -58,7 +59,6 @@ const checkUserFound = async () => {
     const response = await UserStore.getUserByNationalID(data)
 
     
-    console.log(response.data.user)
     if(response.status){
       loading.value = false
       isDialogVisible.value = true
@@ -100,7 +100,7 @@ const checkUser = () => {
           <VRow>
             <VCol 
               cols="6"
-              sm="6"
+              sm="6"  
             >
               <VTextField
                 v-model="nationalId"
@@ -140,7 +140,7 @@ const checkUser = () => {
       v-model:isDialogVisible="isDialogVisible"
       :user-data="userData"
       :card-data="cardData"
-      type="deactivate"
+      type="close-card"
     />
   </div>
 </template>

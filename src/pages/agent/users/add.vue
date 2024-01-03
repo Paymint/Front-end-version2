@@ -11,13 +11,13 @@ const title = ref(`${t("general.add")}`)
 
 const registerUserStep = ref('reg_step_one')
 const isOtpDialogVisible = ref(false)
-
+const userData = ref([])
 
 const items = [
   {
     title: 'Dashboard',
     disabled: false,
-    href: 'dashboard',
+    to: '/',
   },
   {
     title: t('general.users'),
@@ -29,7 +29,8 @@ const items = [
   },
 ]
 
-const userFound = () => {
+const userFound = data => {
+  userData.value = data
   isOtpDialogVisible.value = true
 }
 
@@ -56,8 +57,8 @@ const updateStep = data => {
       </VCardText>
       <GeneralOTP 
         v-model:isDialogVisible="isOtpDialogVisible"
-        :token="forgetPasswordToken"
-        :mobile-number="mobile"
+        :token="userData.forgetPasswordToken"
+        :mobile-number="userData.phone_number"
         @set-new-step="updateStep" 
       />
     </VCard>

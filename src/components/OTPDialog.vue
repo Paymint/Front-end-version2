@@ -3,10 +3,9 @@ import { ref, onMounted } from "vue"
 import { VForm } from "vuetify/components/VForm"
 import { useGlobalHandleError } from "@/composable/useGlobalHandleError"
 import { useAuthStore } from "@/store/auth/authStore"
+import { useToast } from '@/composable/useToast'
 import { useI18n } from "vue-i18n"
 import otpSrc from "@images/otp.png"
-import Swal from "sweetalert2/dist/sweetalert2"
-import "sweetalert2/src/sweetalert2.scss"
 
 const props = defineProps({
   token: {
@@ -29,27 +28,18 @@ const dialogVisibleUpdate = val => {
 
 const { setErrors } = useGlobalHandleError()
 const authStore = useAuthStore()
+const { showToast } = useToast()
 const { t } = useI18n()
 
 const isOtpCompleted = ref(false)
 const otpNumber = ref(null)
 const refOTPVForm = ref(null)
-const timer = ref(60)
 const loading = ref(false)
+const timercounter = ref(600)
+const minutes = ref(Math.floor(timercounter.value / 60))
+const seconds = ref(timercounter.value % 60)
 
 /* data reactive */
-
-const Toast = Swal.mixin({
-  toast: true,
-  position: "top-end",
-  showConfirmButton: false,
-  timer: 1900,
-  timerProgressBar: true,
-})
-
-const zeroPadded = num => {
-  return num < 10 ? `0${num}` : num
-}
 
 const updateOtp = data => {
   if (data.length === 6) {
@@ -60,26 +50,13 @@ const updateOtp = data => {
   }
 }
 
-const secondsTimer = () => {
-  const interval = setInterval(() => {
-    if (timer.value > 0) {
-      timer.value--
-    } else {
-      clearInterval(timer.value)
-    }
-  }, 1000)
-}
-
 const confirmOTPData = async () => {
   loading.value = true
 
   if(timer.value == 0) {
     loading.value = false
     
-    return Toast.fire({
-      icon: "warning",
-      title: t("forgot_password.OTP_expire"),
-    })
+    return  showToast(t("forgot_password.OTP_expire"), { icon: 'warning' })
   }
 
   try {
@@ -90,71 +67,65 @@ const confirmOTPData = async () => {
 
     const response = await authStore.sendOTP(credentials)
     if(response.status) {
-      Toast.fire({
-        icon: "success",
-        title: response.message,
-      })
+      showToast(response.message, { icon: 'success' })
       emit('setNewStep', 'reg_step_three')
       loading.value = false
     }
     else{
       loading.value = false
-      Toast.fire({
-        icon: "error",
-        title: response.message,
-      })
+      showToast(response.message, { icon: 'error' })
     }
   } catch (err) {
     loading.value = false
-    Toast.fire({
-      icon: "error",
-      title: err.response.data.message,
-    })
+    handleErrors(err)
   }
 }
 
 const resendOtp = async () => {
-  try {
-    const credentials = {
-      token: props.token,
-    }
+  const credentials = {
+    token: props.token,
+  }
 
-    const response = await authStore.reSendOTP(credentials)
+  axios.post(baseUrl + 'resend-otp', credentials).then(response => {
     if(response.status) {
-      Toast.fire({
-        icon: "success",
-        title: t("forgot_password.resend_code_success"),
-      }).then(() => {
-        timer.value = 50
-      })
+      showToast(t("forgot_password.resend_code_success"), { icon: 'success' })
+      minutes.value = 9
+      seconds.value = 59
     }
     else{
-      loading.value = false
-      Toast.fire({
-        icon: "error",
-        title: response.message,
-      })
+      showToast(response.message, { icon: 'error' })
     }
-  } catch (err) {
-    Toast.fire({
-      icon: "error",
-      title: err.response.data.message,
-    })
-  }
+  }).catch(e => {
+    handleErrors(e)
+  })
 }
 
 const handleErrors = err => {
   loading.value = false
-  if (err.response) {
+  if(err.response) {
     const { status, data } = err.response
+
     if (status === 422) {
       setErrors(data.errors)
     } else {
-      router.push('/admin/403')
+      showToast(data.message, { icon: 'error' })
     }
   }
 }
 
+
+const decreaseTime = () => {
+  if (minutes.value === 0 && seconds.value === 0) {
+    return
+  }
+
+  if (seconds.value === 0) {
+    minutes.value--
+    seconds.value = 59
+  } else {
+    seconds.value--
+  } 
+}
 
 const onSubmitUpdateOTP = () => {
   refOTPVForm.value?.validate().then(({ valid: isValid }) => {
@@ -162,8 +133,14 @@ const onSubmitUpdateOTP = () => {
   })
 }
 
+
+const minutesDisplay = computed(() => String(minutes.value).padStart(2, '0'))
+const secondsDisplay = computed(() => String(seconds.value).padStart(2, '0'))
+
 onMounted(() => {
-  secondsTimer()
+  const timer = setInterval(decreaseTime, 1000)
+
+  return () => clearInterval(timer)
 })
 </script>
 
@@ -224,7 +201,7 @@ onMounted(() => {
             </VCol>
     
             <VCol cols="12 text-center">
-              <p> <strong>OTP timeout</strong>  00:{{ zeroPadded(timer) }}</p>  
+              <p> <strong>OTP timeout</strong> {{ minutesDisplay }}:{{ secondsDisplay }}</p>  
             </VCol>
     
             <!-- resend otp -->

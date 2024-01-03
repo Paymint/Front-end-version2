@@ -33,7 +33,7 @@ const items = [
   {
     title: 'Dashboard',
     disabled: false,
-    href: 'dashboard',
+    to: '/',
   },
   {
     title: t('general.cards'),
@@ -58,8 +58,6 @@ const checkUserFound = async () => {
 
     const response = await UserStore.getUserByNationalID(data)
 
-    
-    console.log(response.data.user)
     if(response.status){
       loading.value = false
       isDialogVisible.value = true

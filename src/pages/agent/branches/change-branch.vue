@@ -34,10 +34,10 @@ const items = [
   {
     title: 'Dashboard',
     disabled: false,
-    href: 'dashboard',
+    to: '/',
   },
   {
-    title: t('general.cards'),
+    title: t('general.branches'),
     disabled: true,
   },
   {

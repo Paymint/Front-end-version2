@@ -36,6 +36,7 @@ const userStore = useUserStore()
 
 const branches = ref([])
 const isPinDialogVisible = ref(false)
+const selectedBranch = ref(null)
 const token = JSON.parse(localStorage.getItem("userData")).verification_token
 
 
@@ -213,8 +214,12 @@ onMounted(() => {
           </VCol>  
         </VRow>
         <VRow>
-          <VCol cols="12">
+          <VCol cols="3">
+            <h5>Change Branch:</h5>
+          </VCol>
+          <VCol cols="9">
             <VSelect
+              v-model="selectedBranch"
               :items="branches"
               label="Choose Branch"
               item-title="name_en"
@@ -369,7 +374,8 @@ onMounted(() => {
         class="d-flex justify-center my-5"
       >
         <VBtn 
-          variant="flat" 
+          variant="flat"
+          :disabled="selectedBranch == null"
           @click="changeBranch"
         >
           {{ $t('change_branch') }} 

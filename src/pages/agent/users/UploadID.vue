@@ -33,7 +33,7 @@ const iconsSteps = [
   
 ]
 
-const currentStep = ref(3)
+const currentStep = ref(0)
 const isCurrentStepValid = ref(true)
 const refFrontIdForm = ref()
 const refBackIdForm = ref()

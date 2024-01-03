@@ -10,7 +10,7 @@ const items = [
   {
     title: 'Dashboard',
     disabled: false,
-    href: 'dashboard',
+    to: '/',
   },
   {
     title: t('general.users'),
@@ -81,7 +81,7 @@ onMounted(() => {
             </tr>
           </thead>
 
-          <tbody>
+          <tbody v-if="pendingList && pendingList.length > 0">
             <tr
               v-for="(item,i) in pendingList"
               :key="i"
@@ -102,6 +102,19 @@ onMounted(() => {
                 >
                   <VIcon icon="tabler-eye" />  
                 </VBtn>
+              </td>
+            </tr>
+          </tbody>
+          <tbody
+            v-else
+            class="py-5 text-center"
+          >
+            <tr>
+              <td
+                colspan="100"
+                class="align-middle text-secondary"
+              >
+                {{ $t('table.no_data_available') }}
               </td>
             </tr>
           </tbody>

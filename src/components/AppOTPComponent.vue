@@ -27,8 +27,8 @@ const authStore = useAuthStore()
 const isOtpCompleted = ref(false)
 const otpNumber = ref(null)
 const refOTPVForm = ref(null)
-const timercounter = ref(600)
 const loading = ref(false)
+const timercounter = ref(600)
 const minutes = ref(Math.floor(timercounter.value / 60))
 const seconds = ref(timercounter.value % 60)
 const baseUrl = process.env.VUE_APP_BASE_URL 
@@ -83,7 +83,6 @@ const confirmOTPData = async () => {
 
     axios.post(baseUrl + 'verify-pin-otp', credentials).then(response => {
       if(response.status) {
-        console.log(response)
         showToast(response.data.message, { icon: 'success' })
         emit('setConfirmPassword', 'confirm-new-password')
         loading.value = false

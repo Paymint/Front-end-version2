@@ -7,9 +7,11 @@ import { themeConfig } from "@themeConfig"
 import { requiredValidator } from "@validators"
 import { VForm } from "vuetify/components/VForm"
 import { useRouter } from "vue-router"
+import { useToast } from '@/composable/useToast'
 import authImg from "@images/auth/login.jpg"
 
 const isPasswordVisible = ref(false)
+const { showToast } = useToast()
 const route = useRoute()
 const router = useRouter()
 const ability = useAppAbility()
@@ -23,7 +25,7 @@ const errors = ref({
 
 const refVForm = ref()
 const user_name = ref("newAgent")
-const password = ref("12345678")
+const password = ref("Aatbooo@1988")
 const rememberMe = ref(false)
 const loading = ref(false)
 
@@ -54,6 +56,9 @@ const login = () => {
         }
       } else {
         const { access_token, permissions } = response
+
+        console.log(access_token)
+        console.log(permissions)
        
         localStorage.setItem('userAbilities', JSON.stringify(permissions))
         ability.update(permissions)
@@ -65,10 +70,17 @@ const login = () => {
 
       }
     }).catch(err => {
-      console.error(err.response.data.errors)
-      setErrors(err.response.data.errors)
-      loading.value = false
+      handleErrors(err)
     })
+}
+
+const handleErrors = err => {
+  loading.value = false
+  if(err.response) {
+    const { data } = err.response
+
+    showToast(data.message, { icon: 'error' })
+  }
 }
 
 const onSubmit = () => {
