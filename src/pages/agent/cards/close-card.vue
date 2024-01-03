@@ -58,8 +58,6 @@ const checkUserFound = async () => {
 
     const response = await UserStore.getUserByNationalID(data)
 
-    
-    console.log(response.data.user)
     if(response.status){
       loading.value = false
       isDialogVisible.value = true
