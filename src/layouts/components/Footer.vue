@@ -9,7 +9,7 @@
         target="_blank"
         rel="noopener noreferrer"
         class="text-primary ms-1"
-      >Paymint</a>.
+      >Paymint</a>
 
       <span style="padding-left: 10px;">
         All Rights Reserved

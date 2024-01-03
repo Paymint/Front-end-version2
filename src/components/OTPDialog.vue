@@ -57,7 +57,6 @@ const confirmOTPData = async () => {
     loading.value = false
     
     return  showToast(t("forgot_password.OTP_expire"), { icon: 'warning' })
-
   }
 
   try {

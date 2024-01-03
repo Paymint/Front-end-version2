@@ -58,20 +58,16 @@ const checkUser = async () => {
     return showToast(t('error.national_invalid'), { icon: 'error' })
   }
 
-  if (selectedType.value === 'passport') {
-    if (!isValidPassportID(passportID.value)) {
-      return showToast(t('error.passport_invalid'), { icon: 'error' })
-    }
+  if (selectedType.value === 'passport' && !isValidBirthdate(birthDate.value)) {
+    loading.value = false
 
-    if (!isValidBirthdate(birthDate.value)) {
-      return showToast(t('error.birth_date_invalid'), { icon: 'error' })
-    }
+    return showToast(t('error.birth_date_not_correct'), { icon: 'error' })
   }
 
   try {
 
     let payload = {
-      national_id: nationalId.value,
+      national_id: selectedType.value === 'nationalId' ? nationalId.value : passportID.value,
       mobile_number: mobile.value,
       source: 'agent',
       id_type: selectedType.value === 'nationalId' ? 0 : 1,
@@ -79,7 +75,7 @@ const checkUser = async () => {
 
     const response = await UserStore.registerUser(payload)
 
-    if (response.status) { 
+    if (response.status == 200) { 
       loading.value = false
       showToast(response.message, { icon: 'success' })
       emit('userFound', response.data)

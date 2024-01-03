@@ -9,10 +9,11 @@ import salaryAdvance from './module/salaryAdvance'
 import settings from './module/settings'
 import users from './module/users'
 
-import agentDashboard from './module/agent/dashboard'
+// agent dashboard
 import agentUsers from './module/agent/users'
+import { useAgentDashboardNavigation } from './module/agent/dashboard' 
 
-
+const { navigationItems } = useAgentDashboardNavigation()
 
 const role = JSON.parse(localStorage.getItem('userData')).role.name
 
@@ -35,7 +36,7 @@ if(role !== "Agent") {
 
 if (role === "Agent") {
   exportedData = [
-    ...agentDashboard,
+    ...navigationItems,
     ...agentUsers,
   ]
 }
