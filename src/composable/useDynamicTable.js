@@ -9,14 +9,14 @@ export const useDynamicTable = (headers, url, resParams) => {
   const loading = ref(false)
   const fromRecord = ref(1)
   const toRecord = ref(10)
+  
 
   /** Methods **/
   const fetchData = async () => {
     if (url && url !== null) {
-      const baseUrl = process.env.VUE_APP_BASE_URL + url
+      const baseUrl = process.env.VUE_APP_BASE_URL + url 
       const response = await axios.get(`${baseUrl}?page=${currentPage.value}&${resParams}`)
       if (response.status === 200) {
-        console.log(response.data)
         tableData.value = response.data.data
         totalRows.value = response.data.pagination.total
         fromRecord.value = response.data.pagination.from

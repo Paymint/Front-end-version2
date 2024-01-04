@@ -7,6 +7,7 @@ import EgyptIcon from "@images/egypt.png"
 import { useToast } from '@/composable/useToast'
 import { useIdValidator } from "@/composable/useIdValidator"
 import { useEgyptPhoneNumber } from "@/composable/useEgyptPhoneNumber"
+import { onMounted, reactive } from "vue"
 
 
 /********* emit ***********/
@@ -44,14 +45,7 @@ const types = ref([
 /******* methods **********/
 const checkUser = async () => {
   loading.value = true
-
-
-  if (!checkIfEgyptPhoneNumber(mobile.value)) {
-    loading.value = false
-
-    return false
-  }
-
+  
   if (selectedType.value === 'nationalId' && !isValidNationalID(nationalId.value)) {
     loading.value = false
     
@@ -60,8 +54,14 @@ const checkUser = async () => {
 
   if (selectedType.value === 'passport' && !isValidBirthdate(birthDate.value)) {
     loading.value = false
-
+    
     return showToast(t('error.birth_date_not_correct'), { icon: 'error' })
+  }
+  
+  if (!checkIfEgyptPhoneNumber(mobile.value)) {
+    loading.value = false
+
+    return false
   }
 
   try {

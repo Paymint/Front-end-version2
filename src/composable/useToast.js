@@ -3,6 +3,7 @@ import { inject } from 'vue'
 import { useToast as useToastification } from 'vue-toastification'
 
 export function useToast() {
+  
   const toast = useToastification()
 
   function showToast(message, options = {}) {

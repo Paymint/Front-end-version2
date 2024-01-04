@@ -64,6 +64,8 @@ const changeAvatar = file => {
 const getUserData = async () => {
   try {
     const response = await userProfileStore.fetchUserProfile()
+    
+    console.log(response.data.role.id)
     if(response.status){
       baseImgSrc.value = response.data.personal_image
       accountDataLocal.value = {
