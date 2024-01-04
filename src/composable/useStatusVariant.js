@@ -30,6 +30,6 @@ export const useStatusVariant = () => {
 
   return {
     resolveStatusVariant,
-    resolveTransactionStatusVariant
+    resolveTransactionStatusVariant,
   }
 }

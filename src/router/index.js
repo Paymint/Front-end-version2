@@ -20,7 +20,7 @@ const router = createRouter({
             return { name: 'agent-dashboard' }
 
           if (userRole.name === "System super admin")
-            return { name: 'agent-dashboard' }  
+            return { name: 'admin-dashboard' }
         }
         
         return { name: 'login', query: to.query }

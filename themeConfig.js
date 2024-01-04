@@ -4,7 +4,7 @@ import { VIcon } from 'vuetify/components/VIcon'
 // ❗ Logo SVG must be imported with ?raw suffix
 import { defineThemeConfig } from '@core'
 import { RouteTransitions, Skins } from '@core/enums'
-import logo from '@images/logo.png'
+import logo from '@images/logo-light.png'
 import { AppContentLayoutNav, ContentWidth, FooterType, NavbarType } from '@layouts/enums'
 
 export const { themeConfig, layoutConfig } = defineThemeConfig({
@@ -29,7 +29,7 @@ export const { themeConfig, layoutConfig } = defineThemeConfig({
   verticalNav: {
     isVerticalNavCollapsed: false,
     defaultNavItemIconProps: { icon: 'tabler-circle', size: 10 },
-    isVerticalNavSemiDark: false,
+    isVerticalNavSemiDark: true,
   },
   horizontalNav: {
     type: 'sticky',

@@ -5,6 +5,7 @@
         <div class="flex-fill export-btn">
           <!-- 👉 Export invoice -->
           <slot name="download" />
+          <slot name="custom" />
         </div>
       </VCardTitle>
       <VDataTableServer
@@ -61,7 +62,6 @@
         </template>  -->
 
         <!-- handle Actions -->
-        <!-- Actions -->
         <!-- <template #item.action="{ item }">
           <MoreBtn
             :menu-list="computedMoreList(item.raw.id)"
@@ -69,6 +69,34 @@
             item-props
           />
         </template> -->
+
+        <!-- business fields actions -->
+        <template 
+          v-if="props.tableDataType == 'business_fields'"
+          #item.action="{ item }"
+        >
+          <VBtn
+            size="25"
+            color="primary"
+            @click="emit('editBusinessField', item.raw)"
+          >
+            <VIcon
+              icon="tabler-edit"
+              size="16"
+            />
+          </VBtn>
+          <span class="mx-2" />
+          <VBtn 
+            size="25"
+            color="error"
+            @click="emit('deleteBusinessField', item.raw)"
+          >
+            <VIcon
+              icon="tabler-trash"
+              size="16"
+            />
+          </VBtn>
+        </template>  
 
 
 
@@ -157,6 +185,12 @@ const props = defineProps({
   },
 })
 
+/****** emits **********/
+const emit = defineEmits([
+  'deleteBusinessField',
+  'editBusinessField',
+])
+
 /** use composables */
 const resParams = builderQuery(props.query)
 
@@ -164,27 +198,6 @@ const { tableData, currentPage, totalRows, updatePage, fromRecord, toRecord } = 
 
 const { resolveStatusVariant } = useStatusVariant()
 const { numberWithCommas } = useNmberWithCommas()
-
-/* computed */
-const computedMoreList = computed(() => {
-  return (paramId) => [
-    {
-      title: "Delete",
-      value: "delete",
-      prependIcon: "tabler-trash",
-    },
-    {
-      title: "Edit",
-      value: "edit",
-      prependIcon: "tabler-pencil",
-    },
-    {
-      title: "View",
-      value: "view",
-      prependIcon: "tabler-eye",
-    },
-  ]
-})
 </script>
 
 <style scoped>

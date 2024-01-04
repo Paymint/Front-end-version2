@@ -1,3 +1,39 @@
+
+<script setup>
+import UserBioProfile from "@/views/profile/tabs/userBioProfile.vue"
+import { useI18n } from "vue-i18n"
+import ChangePassword from '@/views/profile/tabs/changePassword.vue'
+
+const { t } = useI18n()
+
+const title = `${t("general.my_profile")}`
+
+const items = [
+  {
+    title: "Dashboard",
+    disabled: false,
+    href: "dashboard",
+  },
+  {
+    title: `${t("general.my_profile")}`,
+    disabled: true,
+  },
+]
+
+const tabs = [
+  {
+    icon: 'tabler-users',
+    title: 'Account',
+  },
+  {
+    icon: 'tabler-lock',
+    title: 'Security',
+  },
+]
+
+const profileTab = ref(null)
+</script>
+
 <template>
   <div class="user-profile">
     <VRow>
@@ -44,38 +80,3 @@
     </VRow>
   </div>
 </template>
-
-<script setup>
-import UserBioProfile from "@/views/profile/tabs/userBioProfile.vue"
-import { useI18n } from "vue-i18n"
-import ChangePassword from '@/views/profile/tabs/changePassword.vue'
-
-const { t } = useI18n()
-
-const title = `${t("general.my_profile")}`
-
-const items = [
-  {
-    title: "Dashboard",
-    disabled: false,
-    href: "dashboard",
-  },
-  {
-    title: `${t("general.my_profile")}`,
-    disabled: true,
-  },
-]
-
-const tabs = [
-  {
-    icon: 'tabler-users',
-    title: 'Account',
-  },
-  {
-    icon: 'tabler-lock',
-    title: 'Security',
-  },
-]
-
-const profileTab = ref(null)
-</script>
